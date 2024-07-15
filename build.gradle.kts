@@ -90,7 +90,7 @@ publishing {
                 }
 
                 issueManagement {
-                    name = "GitHub Issues"
+                    system = "GitHub Issues"
                     url = "https://github.com/g000sha256/sonatype-maven-central/issues"
                 }
             }
