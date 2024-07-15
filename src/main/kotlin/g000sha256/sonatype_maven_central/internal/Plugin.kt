@@ -29,7 +29,6 @@ import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import org.gradle.api.provider.Property
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
-import org.gradle.internal.extensions.stdlib.capitalized
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.newInstance
 import org.gradle.kotlin.dsl.register
@@ -52,7 +51,7 @@ internal fun Project.plugin(block: SonatypeMavenCentralRepository.() -> Unit) {
 
         val mavenPublications = publishingExtension.getMavenPublications()
         mavenPublications.forEach { mavenPublication ->
-            val variant = mavenPublication.name.capitalized()
+            val variant = mavenPublication.name.replaceFirstChar(Char::uppercase)
 
             val versionDirectory = mavenPublication.getVersionDirectory(repositoryDirectory)
             val deploymentName = mavenPublication.getDeploymentName()
