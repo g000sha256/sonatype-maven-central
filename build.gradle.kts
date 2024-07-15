@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val libraryGroup = "dev.g000sha256"
 val libraryModule = "sonatype-maven-central"
-val libraryVersion = "0.0.1"
+val libraryVersion = "0.0.2"
 
 group = libraryGroup
 version = libraryVersion
