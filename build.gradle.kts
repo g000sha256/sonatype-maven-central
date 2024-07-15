@@ -1,3 +1,5 @@
+import g000sha256.sonatype_maven_central.SonatypeMavenCentralType
+import g000sha256.sonatype_maven_central.sonatypeMavenCentralRepository
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val libraryGroup = "dev.g000sha256"
@@ -6,6 +8,10 @@ val libraryVersion = "0.0.1"
 
 group = libraryGroup
 version = libraryVersion
+
+buildscript {
+    dependencies { classpath("dev.g000sha256:sonatype-maven-central:0.0.1") }
+}
 
 plugins {
     alias(catalog.plugins.jetbrains.dokka)
@@ -106,3 +112,12 @@ publishing {
 }
 
 signing { sign(publishing.publications) }
+
+sonatypeMavenCentralRepository {
+    type = SonatypeMavenCentralType.Manual
+
+    credentials {
+        username = properties["SonatypeMavenCentral.Username"] as String?
+        password = properties["SonatypeMavenCentral.Password"] as String?
+    }
+}
