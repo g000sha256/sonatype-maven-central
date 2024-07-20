@@ -9,6 +9,8 @@ library-jetbrains-kotlin = { module = "org.jetbrains.kotlin:kotlin-stdlib", vers
 library-ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 library-ktor-java = { module = "io.ktor:ktor-client-java", version.ref = "ktor" }
 
+plugin-sonatype-maven-central = { module = "dev.g000sha256:sonatype-maven-central", version = "0.0.3" }
+
 [plugins]
 jetbrains-dokka = { id = "org.jetbrains.dokka", version = "1.9.20" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

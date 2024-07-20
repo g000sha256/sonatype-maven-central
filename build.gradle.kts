@@ -4,13 +4,13 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val libraryGroup = "dev.g000sha256"
 val libraryModule = "sonatype-maven-central"
-val libraryVersion = "0.0.3"
+val libraryVersion = "0.0.4"
 
 group = libraryGroup
 version = libraryVersion
 
 buildscript {
-    dependencies { classpath("dev.g000sha256:sonatype-maven-central:0.0.1") }
+    dependencies { classpath(catalog.plugin.sonatype.maven.central) }
 }
 
 plugins {
@@ -69,7 +69,7 @@ publishing {
 
             pom {
                 name = "Sonatype Maven Central"
-                description = "Sonatype Maven Central upload plugin"
+                description = "Sonatype Maven Central publish plugin"
                 url = "https://github.com/g000sha256/sonatype-maven-central"
                 inceptionYear = "2024"
 
@@ -84,7 +84,7 @@ publishing {
                     developer {
                         id = "g000sha256"
                         name = "Georgii Ippolitov"
-                        email = "bsuakseygr@g000sha256.dev"
+                        email = "detmmpmznb@g000sha256.dev"
                         url = "https://github.com/g000sha256"
                     }
                 }
@@ -111,13 +111,28 @@ publishing {
     }
 }
 
-signing { sign(publishing.publications) }
+signing {
+    val key = getProperty("Signing.Key") ?: getEnvironment("SIGNING_KEY")
+    val password = getProperty("Signing.Password") ?: getEnvironment("SIGNING_PASSWORD")
+    useInMemoryPgpKeys(key, password)
+
+    val publication = publishing.publications["release"]
+    sign(publication)
+}
 
 sonatypeMavenCentralRepository {
     type = SonatypeMavenCentralType.Manual
 
     credentials {
-        username = properties["SonatypeMavenCentral.Username"] as String?
-        password = properties["SonatypeMavenCentral.Password"] as String?
+        username = getProperty("SonatypeMavenCentral.Username") ?: getEnvironment("SONATYPE_USERNAME")
+        password = getProperty("SonatypeMavenCentral.Password") ?: getEnvironment("SONATYPE_PASSWORD")
     }
+}
+
+private fun getProperty(key: String): String? {
+    return properties[key] as String?
+}
+
+private fun getEnvironment(key: String): String? {
+    return System.getenv(key)
 }
