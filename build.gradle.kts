@@ -69,7 +69,7 @@ publishing {
 
             pom {
                 name = "Sonatype Maven Central"
-                description = "Sonatype Maven Central upload plugin"
+                description = "Sonatype Maven Central publish plugin"
                 url = "https://github.com/g000sha256/sonatype-maven-central"
                 inceptionYear = "2024"
 
@@ -84,7 +84,7 @@ publishing {
                     developer {
                         id = "g000sha256"
                         name = "Georgii Ippolitov"
-                        email = "bsuakseygr@g000sha256.dev"
+                        email = "detmmpmznb@g000sha256.dev"
                         url = "https://github.com/g000sha256"
                     }
                 }
@@ -111,13 +111,20 @@ publishing {
     }
 }
 
-signing { sign(publishing.publications) }
+signing {
+    val publication = publishing.publications["release"]
+    sign(publication)
+}
 
 sonatypeMavenCentralRepository {
     type = SonatypeMavenCentralType.Manual
 
     credentials {
-        username = properties["SonatypeMavenCentral.Username"] as String?
-        password = properties["SonatypeMavenCentral.Password"] as String?
+        username = getProperty("SonatypeMavenCentral.Username")
+        password = getProperty("SonatypeMavenCentral.Password")
     }
+}
+
+private fun getProperty(key: String): String? {
+    return properties[key] as String?
 }
