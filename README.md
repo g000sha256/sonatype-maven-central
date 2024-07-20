@@ -11,7 +11,7 @@ This plugin simplifies the process of publishing your artifacts to
 ```kotlin
 buildscript {
     dependencies {
-        classpath("dev.g000sha256:sonatype-maven-central:0.0.3")
+        classpath("dev.g000sha256:sonatype-maven-central:0.0.4")
     }
 
     repositories {

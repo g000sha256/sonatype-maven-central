@@ -4,13 +4,13 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val libraryGroup = "dev.g000sha256"
 val libraryModule = "sonatype-maven-central"
-val libraryVersion = "0.0.3"
+val libraryVersion = "0.0.4"
 
 group = libraryGroup
 version = libraryVersion
 
 buildscript {
-    dependencies { classpath("dev.g000sha256:sonatype-maven-central:0.0.1") }
+    dependencies { classpath(catalog.plugin.sonatype.maven.central) }
 }
 
 plugins {
