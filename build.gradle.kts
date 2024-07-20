@@ -112,6 +112,10 @@ publishing {
 }
 
 signing {
+    val key = getProperty("Signing.Key") ?: getEnvironment("SIGNING_KEY")
+    val password = getProperty("Signing.Password") ?: getEnvironment("SIGNING_PASSWORD")
+    useInMemoryPgpKeys(key, password)
+
     val publication = publishing.publications["release"]
     sign(publication)
 }
@@ -120,11 +124,15 @@ sonatypeMavenCentralRepository {
     type = SonatypeMavenCentralType.Manual
 
     credentials {
-        username = getProperty("SonatypeMavenCentral.Username")
-        password = getProperty("SonatypeMavenCentral.Password")
+        username = getProperty("SonatypeMavenCentral.Username") ?: getEnvironment("SONATYPE_USERNAME")
+        password = getProperty("SonatypeMavenCentral.Password") ?: getEnvironment("SONATYPE_PASSWORD")
     }
 }
 
 private fun getProperty(key: String): String? {
     return properties[key] as String?
+}
+
+private fun getEnvironment(key: String): String? {
+    return System.getenv(key)
 }
