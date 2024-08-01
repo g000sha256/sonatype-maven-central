@@ -6,11 +6,8 @@ val libraryGroup = "dev.g000sha256"
 val libraryModule = "sonatype-maven-central"
 val libraryVersion = "0.0.4"
 
-group = libraryGroup
-version = libraryVersion
-
 buildscript {
-    dependencies { classpath(catalog.plugin.sonatype.maven.central) }
+    dependencies { classpath(catalog.plugin.sonatype) }
 }
 
 plugins {
@@ -49,7 +46,7 @@ kotlin {
 
 val sourcesJarTaskProvider = tasks.kotlinSourcesJar
 
-val dokkaJavaDocTaskProvider = tasks.dokkaJavadoc
+val dokkaJavaDocTaskProvider = tasks.dokkaHtml
 
 val dokkaJavaDocJarTaskProvider = tasks.register<Jar>("dokkaJavaDocJar") {
     archiveClassifier = "javadoc"
@@ -75,7 +72,7 @@ publishing {
 
                 licenses {
                     license {
-                        name = "The Apache License, Version 2.0"
+                        name = "Apache License 2.0"
                         url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
                     }
                 }
@@ -104,9 +101,8 @@ publishing {
             val component = components["kotlin"]
             from(component)
 
-            artifact(sourcesJarTaskProvider) { builtBy(sourcesJarTaskProvider) }
-
-            artifact(dokkaJavaDocJarTaskProvider) { builtBy(dokkaJavaDocJarTaskProvider) }
+            artifact(sourcesJarTaskProvider)
+            artifact(dokkaJavaDocJarTaskProvider)
         }
     }
 }
