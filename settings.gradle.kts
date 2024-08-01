@@ -1,8 +1,5 @@
 pluginManagement {
-    repositories {
-        mavenCentral()
-        mavenLocal()
-    }
+    repositories { mavenCentral() }
 }
 
 dependencyResolutionManagement {
