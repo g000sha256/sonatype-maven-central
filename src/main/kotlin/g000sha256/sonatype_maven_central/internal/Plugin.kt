@@ -19,9 +19,9 @@ package g000sha256.sonatype_maven_central.internal
 import g000sha256.sonatype_maven_central.SonatypeMavenCentralCredentials
 import g000sha256.sonatype_maven_central.SonatypeMavenCentralRepository
 import g000sha256.sonatype_maven_central.SonatypeMavenCentralType
-import g000sha256.sonatype_maven_central.internal.task.CreateZipTask
-import g000sha256.sonatype_maven_central.internal.task.UploadTask
 import g000sha256.sonatype_maven_central.internal.util.createDirectory
+import g000sha256.sonatype_maven_central.internal.util.uploadBundle
+import g000sha256.sonatype_maven_central.internal.util.zipFromDirectory
 import java.io.File
 import javax.inject.Inject
 import org.gradle.api.Project
@@ -31,7 +31,6 @@ import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.newInstance
-import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 
 internal fun Project.plugin(block: SonatypeMavenCentralRepository.() -> Unit) {
@@ -49,35 +48,22 @@ internal fun Project.plugin(block: SonatypeMavenCentralRepository.() -> Unit) {
 
         publishingExtension.repositories.maven { it.init(repositoryDirectory) }
 
-        val mavenPublications = publishingExtension.getMavenPublications()
-        mavenPublications.forEach { mavenPublication ->
+        publishingExtension.publications.withType<MavenPublication> {
+            val mavenPublication = this
             val variant = mavenPublication.name.replaceFirstChar(Char::uppercase)
 
-            val versionDirectory = mavenPublication.getVersionDirectory(repositoryDirectory)
-            val deploymentName = mavenPublication.getDeploymentName()
-            val bundleFile = File(bundleDirectory, "$deploymentName.zip")
-
-            val createZipTaskData = CreateZipTask.Data(repositoryDirectory, versionDirectory, bundleFile)
-            val uploadTaskData = UploadTask.Data(inputData.username, inputData.password, deploymentName, inputData.type, bundleFile)
-
             val publishTask = tasks.named("publish${variant}PublicationToSonatypeMavenCentralRepository")
-            val createZipTask = tasks.register<CreateZipTask>("createZip$variant", createZipTaskData)
-            val uploadTask = tasks.register<UploadTask>("upload$variant", uploadTaskData)
+            publishTask.configure {
+                it.doLast {
+                    val versionDirectory = mavenPublication.getVersionDirectory(repositoryDirectory)
+                    val deploymentName = mavenPublication.getDeploymentName()
+                    val bundleFile = File(bundleDirectory, "$deploymentName.zip")
 
-            publishTask.configure { it.finalizedBy(createZipTask) }
+                    bundleFile.delete()
+                    zipFromDirectory(repositoryDirectory, versionDirectory, bundleFile)
 
-            val group = "sonatype maven central"
-            createZipTask.configure {
-                it.group = group
-                it.dependsOn(publishTask)
-                it.mustRunAfter(publishTask)
-                it.finalizedBy(uploadTask)
-            }
-
-            uploadTask.configure {
-                it.group = group
-                it.dependsOn(createZipTask)
-                it.mustRunAfter(createZipTask)
+                    uploadBundle(inputData.username, inputData.password, deploymentName, inputData.type, bundleFile)
+                }
             }
         }
     }
@@ -143,11 +129,6 @@ private fun initShutdownHook(thread: Thread) {
 private fun MavenArtifactRepository.init(directory: File) {
     name = "SonatypeMavenCentral"
     setUrl(directory)
-}
-
-private fun PublishingExtension.getMavenPublications(): List<MavenPublication> {
-    val mavenPublications = publications.withType<MavenPublication>()
-    return mavenPublications.toList()
 }
 
 private fun MavenPublication.getVersionDirectory(repositoryDirectory: File): File {
