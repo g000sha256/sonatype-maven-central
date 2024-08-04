@@ -31,7 +31,6 @@ import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.newInstance
-import org.gradle.kotlin.dsl.withType
 
 internal fun Project.plugin(block: SonatypeMavenCentralRepository.() -> Unit) {
     val credentials = objects.newInstance<SonatypeMavenCentralCredentials>()
@@ -50,8 +49,7 @@ internal fun Project.plugin(block: SonatypeMavenCentralRepository.() -> Unit) {
 
         publishingExtension.repositories.maven { it.init(repositoryDirectory) }
 
-        publishingExtension.publications.withType<MavenPublication> {
-            val mavenPublication = this
+        publishingExtension.publications.withType(MavenPublication::class.java) { mavenPublication ->
             val variant = mavenPublication.name.replaceFirstChar(Char::uppercase)
 
             tasks.named("publish${variant}PublicationToSonatypeMavenCentralRepository") {

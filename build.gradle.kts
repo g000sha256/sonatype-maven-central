@@ -10,6 +10,7 @@ buildscript {
 }
 
 plugins {
+    alias(catalog.plugins.jetbrains.binaryCompatibilityValidator)
     alias(catalog.plugins.jetbrains.dokka)
     alias(catalog.plugins.jetbrains.kotlinJvm)
     id("org.gradle.maven-publish")
