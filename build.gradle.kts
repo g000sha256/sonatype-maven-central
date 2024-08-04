@@ -59,6 +59,12 @@ val dokkaJavaDocJarTaskProvider = tasks.register<Jar>("dokkaJavaDocJar") {
 publishing {
     publications {
         register<MavenPublication>("release") {
+            val component = components["kotlin"]
+            from(component)
+
+            artifact(sourcesJarTaskProvider)
+            artifact(dokkaJavaDocJarTaskProvider)
+
             pom {
                 name = "Sonatype Maven Central"
                 description = "Sonatype Maven Central publish plugin"
@@ -92,12 +98,6 @@ publishing {
                     url = "https://github.com/g000sha256/sonatype-maven-central/issues"
                 }
             }
-
-            val component = components["kotlin"]
-            from(component)
-
-            artifact(sourcesJarTaskProvider)
-            artifact(dokkaJavaDocJarTaskProvider)
         }
     }
 }
