@@ -1,14 +1,15 @@
-name: Build
+name: Dependency submission
 
 on:
   push:
     branches:
       - 'master'
-      - 'release'
-      - '[0-9]+.[0-9]+.[0-9]+'
+
+permissions:
+  contents: write
 
 jobs:
-  build:
+  dependency-submission:
     runs-on: macos-latest
 
     steps:
@@ -30,14 +31,8 @@ jobs:
           cache-disabled: false
           cache-read-only: false
 
-      - name: Assemble
+      - name: Generate and submit dependency graph
+        uses: gradle/actions/dependency-submission@v4
         env:
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-        run: ./gradlew assemble
-
-      - name: Binary compatibility validation
-        env:
-          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-        run: ./gradlew apiCheck
