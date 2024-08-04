@@ -34,7 +34,9 @@ import org.gradle.kotlin.dsl.newInstance
 import org.gradle.kotlin.dsl.withType
 
 internal fun Project.plugin(block: SonatypeMavenCentralRepository.() -> Unit) {
-    val inputData = collectInputData(block)
+    val credentials = objects.newInstance<SonatypeMavenCentralCredentials>()
+    val repository = objects.newInstance<RepositoryWrapper>(credentials)
+    repository.block()
 
     val buildDirectory = layout.buildDirectory.asFile.get()
     val pluginDirectory = createDirectory(buildDirectory, "sonatype_maven_central")
@@ -52,9 +54,16 @@ internal fun Project.plugin(block: SonatypeMavenCentralRepository.() -> Unit) {
             val mavenPublication = this
             val variant = mavenPublication.name.replaceFirstChar(Char::uppercase)
 
-            val publishTask = tasks.named("publish${variant}PublicationToSonatypeMavenCentralRepository")
-            publishTask.configure {
+            tasks.named("publish${variant}PublicationToSonatypeMavenCentralRepository") {
                 it.doLast {
+                    val username = credentials.username.getTrimmedValue()
+                    val password = credentials.password.getTrimmedValue()
+
+                    requireNotNull(username) { "Username is null or blank" }
+                    requireNotNull(password) { "Password is null or blank" }
+
+                    val type = repository.type.getStringType()
+
                     val versionDirectory = mavenPublication.getVersionDirectory(repositoryDirectory)
                     val deploymentName = mavenPublication.getDeploymentName()
                     val bundleFile = File(bundleDirectory, "$deploymentName.zip")
@@ -62,26 +71,11 @@ internal fun Project.plugin(block: SonatypeMavenCentralRepository.() -> Unit) {
                     bundleFile.delete()
                     zipFromDirectory(repositoryDirectory, versionDirectory, bundleFile)
 
-                    uploadBundle(inputData.username, inputData.password, deploymentName, inputData.type, bundleFile)
+                    uploadBundle(username, password, deploymentName, type, bundleFile)
                 }
             }
         }
     }
-}
-
-private fun Project.collectInputData(block: SonatypeMavenCentralRepository.() -> Unit): InputData {
-    val credentials = objects.newInstance<SonatypeMavenCentralCredentials>()
-    val repository = objects.newInstance<RepositoryWrapper>(credentials)
-    repository.block()
-
-    val username = credentials.username.getTrimmedValue()
-    val password = credentials.password.getTrimmedValue()
-
-    requireNotNull(username) { "Username is null or blank" }
-    requireNotNull(password) { "Password is null or blank" }
-
-    val type = repository.type.getStringType()
-    return InputData(username, password, type)
 }
 
 private fun Property<String>.getTrimmedValue(): String? {
@@ -149,5 +143,3 @@ private abstract class RepositoryWrapper @Inject constructor(
     }
 
 }
-
-private class InputData(val username: String, val password: String, val type: String)
