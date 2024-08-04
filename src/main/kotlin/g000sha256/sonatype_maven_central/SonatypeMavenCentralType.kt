@@ -16,10 +16,10 @@
 
 package g000sha256.sonatype_maven_central
 
-sealed interface SonatypeMavenCentralType {
+public sealed interface SonatypeMavenCentralType {
 
-    object Automatic : SonatypeMavenCentralType
+    public object Automatic : SonatypeMavenCentralType
 
-    object Manual : SonatypeMavenCentralType
+    public object Manual : SonatypeMavenCentralType
 
 }

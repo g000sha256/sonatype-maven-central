@@ -1,0 +1,25 @@
+public abstract interface class g000sha256/sonatype_maven_central/SonatypeMavenCentralCredentials {
+	public abstract fun getPassword ()Lorg/gradle/api/provider/Property;
+	public abstract fun getUsername ()Lorg/gradle/api/provider/Property;
+}
+
+public final class g000sha256/sonatype_maven_central/SonatypeMavenCentralPluginKt {
+	public static final fun sonatypeMavenCentralRepository (Lorg/gradle/api/Project;Lkotlin/jvm/functions/Function1;)V
+}
+
+public abstract interface class g000sha256/sonatype_maven_central/SonatypeMavenCentralRepository {
+	public abstract fun credentials (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun getType ()Lorg/gradle/api/provider/Property;
+}
+
+public abstract interface class g000sha256/sonatype_maven_central/SonatypeMavenCentralType {
+}
+
+public final class g000sha256/sonatype_maven_central/SonatypeMavenCentralType$Automatic : g000sha256/sonatype_maven_central/SonatypeMavenCentralType {
+	public static final field INSTANCE Lg000sha256/sonatype_maven_central/SonatypeMavenCentralType$Automatic;
+}
+
+public final class g000sha256/sonatype_maven_central/SonatypeMavenCentralType$Manual : g000sha256/sonatype_maven_central/SonatypeMavenCentralType {
+	public static final field INSTANCE Lg000sha256/sonatype_maven_central/SonatypeMavenCentralType$Manual;
+}
+

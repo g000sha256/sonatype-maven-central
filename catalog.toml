@@ -1,5 +1,5 @@
 [versions]
-kotlin = "1.9.24"
+kotlin = "2.0.0"
 ktor = "2.3.11"
 
 [libraries]
@@ -9,8 +9,9 @@ library-jetbrains-kotlin = { module = "org.jetbrains.kotlin:kotlin-stdlib", vers
 library-ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 library-ktor-java = { module = "io.ktor:ktor-client-java", version.ref = "ktor" }
 
-plugin-sonatype = { module = "dev.g000sha256:sonatype-maven-central", version = "0.0.4" }
+plugin-sonatype = { module = "dev.g000sha256:sonatype-maven-central", version = "0.0.5" }
 
 [plugins]
+jetbrains-binaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.16.2" }
 jetbrains-dokka = { id = "org.jetbrains.dokka", version = "1.9.20" }
-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+jetbrains-kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

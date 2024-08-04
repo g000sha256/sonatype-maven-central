@@ -1,3 +1,5 @@
+rootProject.name = "sonatype-maven-central"
+
 pluginManagement {
     repositories { mavenCentral() }
 }

@@ -18,9 +18,9 @@ package g000sha256.sonatype_maven_central
 
 import org.gradle.api.provider.Property
 
-interface SonatypeMavenCentralCredentials {
+public interface SonatypeMavenCentralCredentials {
 
-    val username: Property<String>
-    val password: Property<String>
+    public val username: Property<String>
+    public val password: Property<String>
 
 }

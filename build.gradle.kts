@@ -2,17 +2,17 @@ import g000sha256.sonatype_maven_central.SonatypeMavenCentralType
 import g000sha256.sonatype_maven_central.sonatypeMavenCentralRepository
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val libraryGroup = "dev.g000sha256"
-val libraryModule = "sonatype-maven-central"
-val libraryVersion = "0.0.5"
+group = "dev.g000sha256"
+version = "0.0.6"
 
 buildscript {
     dependencies { classpath(catalog.plugin.sonatype) }
 }
 
 plugins {
+    alias(catalog.plugins.jetbrains.binaryCompatibilityValidator)
     alias(catalog.plugins.jetbrains.dokka)
-    alias(catalog.plugins.jetbrains.kotlin.jvm)
+    alias(catalog.plugins.jetbrains.kotlinJvm)
     id("org.gradle.maven-publish")
     id("org.gradle.signing")
 }
@@ -23,6 +23,8 @@ java {
 }
 
 kotlin {
+    explicitApi()
+
     compilerOptions {
         jvmTarget = JvmTarget.JVM_11
         moduleName = "g000sha256.sonatype_maven_central"
@@ -60,9 +62,11 @@ val dokkaJavaDocJarTaskProvider = tasks.register<Jar>("dokkaJavaDocJar") {
 publishing {
     publications {
         register<MavenPublication>("release") {
-            groupId = libraryGroup
-            artifactId = libraryModule
-            version = libraryVersion
+            val component = components["kotlin"]
+            from(component)
+
+            artifact(sourcesJarTaskProvider)
+            artifact(dokkaJavaDocJarTaskProvider)
 
             pom {
                 name = "Sonatype Maven Central"
@@ -97,12 +101,6 @@ publishing {
                     url = "https://github.com/g000sha256/sonatype-maven-central/issues"
                 }
             }
-
-            val component = components["kotlin"]
-            from(component)
-
-            artifact(sourcesJarTaskProvider)
-            artifact(dokkaJavaDocJarTaskProvider)
         }
     }
 }
