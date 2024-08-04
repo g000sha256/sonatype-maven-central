@@ -2,9 +2,8 @@ import g000sha256.sonatype_maven_central.SonatypeMavenCentralType
 import g000sha256.sonatype_maven_central.sonatypeMavenCentralRepository
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val libraryGroup = "dev.g000sha256"
-val libraryModule = "sonatype-maven-central"
-val libraryVersion = "0.0.5"
+group = "dev.g000sha256"
+version = "0.0.5"
 
 buildscript {
     dependencies { classpath(catalog.plugin.sonatype) }
@@ -60,10 +59,6 @@ val dokkaJavaDocJarTaskProvider = tasks.register<Jar>("dokkaJavaDocJar") {
 publishing {
     publications {
         register<MavenPublication>("release") {
-            groupId = libraryGroup
-            artifactId = libraryModule
-            version = libraryVersion
-
             pom {
                 name = "Sonatype Maven Central"
                 description = "Sonatype Maven Central publish plugin"
