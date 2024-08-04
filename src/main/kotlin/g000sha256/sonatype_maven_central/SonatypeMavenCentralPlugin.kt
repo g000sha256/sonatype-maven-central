@@ -19,6 +19,6 @@ package g000sha256.sonatype_maven_central
 import g000sha256.sonatype_maven_central.internal.plugin
 import org.gradle.api.Project
 
-fun Project.sonatypeMavenCentralRepository(block: SonatypeMavenCentralRepository.() -> Unit) {
+public fun Project.sonatypeMavenCentralRepository(block: SonatypeMavenCentralRepository.() -> Unit) {
     plugin(block)
 }

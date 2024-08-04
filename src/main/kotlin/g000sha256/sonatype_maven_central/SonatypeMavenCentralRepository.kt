@@ -18,10 +18,10 @@ package g000sha256.sonatype_maven_central
 
 import org.gradle.api.provider.Property
 
-interface SonatypeMavenCentralRepository {
+public interface SonatypeMavenCentralRepository {
 
-    val type: Property<SonatypeMavenCentralType>
+    public val type: Property<SonatypeMavenCentralType>
 
-    fun credentials(block: SonatypeMavenCentralCredentials.() -> Unit)
+    public fun credentials(block: SonatypeMavenCentralCredentials.() -> Unit)
 
 }

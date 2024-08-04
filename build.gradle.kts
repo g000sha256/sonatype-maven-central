@@ -22,6 +22,8 @@ java {
 }
 
 kotlin {
+    explicitApi()
+
     compilerOptions {
         jvmTarget = JvmTarget.JVM_11
         moduleName = "g000sha256.sonatype_maven_central"
