@@ -3,7 +3,7 @@ import g000sha256.sonatype_maven_central.sonatypeMavenCentralRepository
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 group = "dev.g000sha256"
-version = "0.0.5"
+version = "0.0.6"
 
 buildscript {
     dependencies { classpath(catalog.plugin.sonatype) }
