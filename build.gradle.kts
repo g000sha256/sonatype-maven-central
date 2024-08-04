@@ -11,7 +11,7 @@ buildscript {
 
 plugins {
     alias(catalog.plugins.jetbrains.dokka)
-    alias(catalog.plugins.jetbrains.kotlin.jvm)
+    alias(catalog.plugins.jetbrains.kotlinJvm)
     id("org.gradle.maven-publish")
     id("org.gradle.signing")
 }
