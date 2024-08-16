@@ -3,6 +3,12 @@ public abstract interface class g000sha256/sonatype_maven_central/SonatypeMavenC
 	public abstract fun getUsername ()Lorg/gradle/api/provider/Property;
 }
 
+public final class g000sha256/sonatype_maven_central/SonatypeMavenCentralPlugin : org/gradle/api/Plugin {
+	public fun <init> ()V
+	public synthetic fun apply (Ljava/lang/Object;)V
+	public fun apply (Lorg/gradle/api/Project;)V
+}
+
 public final class g000sha256/sonatype_maven_central/SonatypeMavenCentralPluginKt {
 	public static final fun sonatypeMavenCentralRepository (Lorg/gradle/api/Project;Lkotlin/jvm/functions/Function1;)V
 }
@@ -12,7 +18,7 @@ public abstract interface class g000sha256/sonatype_maven_central/SonatypeMavenC
 	public abstract fun getType ()Lorg/gradle/api/provider/Property;
 }
 
-public abstract interface class g000sha256/sonatype_maven_central/SonatypeMavenCentralType {
+public abstract class g000sha256/sonatype_maven_central/SonatypeMavenCentralType {
 }
 
 public final class g000sha256/sonatype_maven_central/SonatypeMavenCentralType$Automatic : g000sha256/sonatype_maven_central/SonatypeMavenCentralType {
