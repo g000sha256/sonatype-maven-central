@@ -12,7 +12,6 @@ buildscript {
 plugins {
     alias(catalog.plugins.gradle.pluginPublish)
     alias(catalog.plugins.jetbrains.binaryCompatibilityValidator)
-    alias(catalog.plugins.jetbrains.dokka)
     alias(catalog.plugins.jetbrains.kotlinJvm)
     id("org.gradle.java-gradle-plugin")
     id("org.gradle.maven-publish")
@@ -43,17 +42,6 @@ kotlin {
             }
         }
     }
-}
-
-val dokkaJavaDocTaskProvider = tasks.dokkaHtml
-
-val dokkaJavaDocJarTaskProvider = tasks.register<Jar>("dokkaJavaDocJar") {
-    archiveClassifier = "javadoc"
-    group = "documentation"
-    dependsOn(dokkaJavaDocTaskProvider)
-
-    val dokkaJavaDocTask = dokkaJavaDocTaskProvider.get()
-    from(dokkaJavaDocTask.outputDirectory)
 }
 
 val pomName = "Sonatype Maven Central publish plugin"

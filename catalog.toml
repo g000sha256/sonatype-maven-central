@@ -15,5 +15,4 @@ plugin-sonatype = { module = "dev.g000sha256:sonatype-maven-central", version = 
 gradle-pluginPublish = { id = "com.gradle.plugin-publish", version = "1.2.1" }
 
 jetbrains-binaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.16.2" }
-jetbrains-dokka = { id = "org.jetbrains.dokka", version = "1.9.20" }
 jetbrains-kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
