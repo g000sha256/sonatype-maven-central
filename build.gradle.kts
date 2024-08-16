@@ -1,13 +1,7 @@
-import g000sha256.sonatype_maven_central.SonatypeMavenCentralType
-import g000sha256.sonatype_maven_central.sonatypeMavenCentralRepository
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 group = "dev.g000sha256"
 version = "0.0.6"
-
-buildscript {
-    dependencies { classpath(catalog.plugin.sonatype) }
-}
 
 plugins {
     alias(catalog.plugins.gradle.pluginPublish)
@@ -116,15 +110,6 @@ signing {
     useInMemoryPgpKeys(key, password)
 
     sign(publishing.publications)
-}
-
-sonatypeMavenCentralRepository {
-    type = SonatypeMavenCentralType.Manual
-
-    credentials {
-        username = getProperty("SonatypeMavenCentral.Username") ?: getEnvironment("SONATYPE_USERNAME")
-        password = getProperty("SonatypeMavenCentral.Password") ?: getEnvironment("SONATYPE_PASSWORD")
-    }
 }
 
 private fun getProperty(key: String): String? {
