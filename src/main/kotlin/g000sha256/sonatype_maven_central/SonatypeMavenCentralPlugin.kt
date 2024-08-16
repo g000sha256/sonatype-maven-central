@@ -16,9 +16,40 @@
 
 package g000sha256.sonatype_maven_central
 
-import g000sha256.sonatype_maven_central.internal.plugin
+import g000sha256.sonatype_maven_central.internal.initPlugin
+import javax.inject.Inject
+import org.gradle.api.Plugin
 import org.gradle.api.Project
 
+@Deprecated("Use sonatypeMavenCentralRepository directly without importing the extension.")
 public fun Project.sonatypeMavenCentralRepository(block: SonatypeMavenCentralRepository.() -> Unit) {
-    plugin(block)
+    val credentials = objects.newInstance(SonatypeMavenCentralCredentials::class.java)
+    val repository = objects.newInstance(SonatypeMavenCentralPlugin.RepositoryWrapper::class.java, credentials)
+
+    repository.block()
+
+    initPlugin(credentials.username, credentials.password, repository.type)
+}
+
+public class SonatypeMavenCentralPlugin : Plugin<Project> {
+
+    override fun apply(target: Project) {
+        val credentials = target.objects.newInstance(SonatypeMavenCentralCredentials::class.java)
+        val repository = target.objects.newInstance(RepositoryWrapper::class.java, credentials)
+
+        target.extensions.add(SonatypeMavenCentralRepository::class.java, "sonatypeMavenCentralRepository", repository)
+
+        target.initPlugin(credentials.username, credentials.password, repository.type)
+    }
+
+    internal abstract class RepositoryWrapper @Inject constructor(
+        private val credentials: SonatypeMavenCentralCredentials
+    ) : SonatypeMavenCentralRepository {
+
+        override fun credentials(block: SonatypeMavenCentralCredentials.() -> Unit) {
+            credentials.block()
+        }
+
+    }
+
 }

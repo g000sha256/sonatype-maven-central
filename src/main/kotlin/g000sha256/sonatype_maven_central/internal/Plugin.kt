@@ -16,27 +16,22 @@
 
 package g000sha256.sonatype_maven_central.internal
 
-import g000sha256.sonatype_maven_central.SonatypeMavenCentralCredentials
-import g000sha256.sonatype_maven_central.SonatypeMavenCentralRepository
 import g000sha256.sonatype_maven_central.SonatypeMavenCentralType
 import g000sha256.sonatype_maven_central.internal.util.createDirectory
 import g000sha256.sonatype_maven_central.internal.util.uploadBundle
 import g000sha256.sonatype_maven_central.internal.util.zipFromDirectory
 import java.io.File
-import javax.inject.Inject
 import org.gradle.api.Project
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import org.gradle.api.provider.Property
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
-import org.gradle.kotlin.dsl.getByType
-import org.gradle.kotlin.dsl.newInstance
 
-internal fun Project.plugin(block: SonatypeMavenCentralRepository.() -> Unit) {
-    val credentials = objects.newInstance<SonatypeMavenCentralCredentials>()
-    val repository = objects.newInstance<RepositoryWrapper>(credentials)
-    repository.block()
-
+internal fun Project.initPlugin(
+    usernameProperty: Property<String>,
+    passwordProperty: Property<String>,
+    typeProperty: Property<SonatypeMavenCentralType>
+) {
     val buildDirectory = layout.buildDirectory.asFile.get()
     val pluginDirectory = createDirectory(buildDirectory, "sonatype_maven_central")
     val bundleDirectory = createDirectory(pluginDirectory, "bundle")
@@ -45,7 +40,7 @@ internal fun Project.plugin(block: SonatypeMavenCentralRepository.() -> Unit) {
     initShutdownHook { clearDirectories(bundleDirectory, repositoryDirectory) }
 
     afterEvaluate {
-        val publishingExtension = extensions.getByType<PublishingExtension>()
+        val publishingExtension = extensions.getByType(PublishingExtension::class.java)
 
         publishingExtension.repositories.maven { it.init(repositoryDirectory) }
 
@@ -54,13 +49,13 @@ internal fun Project.plugin(block: SonatypeMavenCentralRepository.() -> Unit) {
 
             tasks.named("publish${variant}PublicationToSonatypeMavenCentralRepository") {
                 it.doLast {
-                    val username = credentials.username.getTrimmedValue()
-                    val password = credentials.password.getTrimmedValue()
+                    val username = usernameProperty.getTrimmedValue()
+                    val password = passwordProperty.getTrimmedValue()
 
                     requireNotNull(username) { "Username is null or blank" }
                     requireNotNull(password) { "Password is null or blank" }
 
-                    val type = repository.type.getStringType()
+                    val type = typeProperty.getStringType()
 
                     val versionDirectory = mavenPublication.getVersionDirectory(repositoryDirectory)
                     val deploymentName = mavenPublication.getDeploymentName()
@@ -130,14 +125,4 @@ private fun MavenPublication.getVersionDirectory(repositoryDirectory: File): Fil
 
 private fun MavenPublication.getDeploymentName(): String {
     return "$groupId:$artifactId:$version"
-}
-
-private abstract class RepositoryWrapper @Inject constructor(
-    private val credentials: SonatypeMavenCentralCredentials
-) : SonatypeMavenCentralRepository {
-
-    override fun credentials(block: SonatypeMavenCentralCredentials.() -> Unit) {
-        credentials.block()
-    }
-
 }
