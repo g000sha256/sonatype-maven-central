@@ -1,80 +1,32 @@
 # Sonatype Maven Central publish plugin
 
-This plugin simplifies the process of publishing your artifacts to
-[Sonatype Maven Central](https://central.sonatype.org/register/central-portal). It uses the standard plugins such as
-`org.gradle.maven-publish` and `org.gradle.signing`.
+This plugin simplifies publishing your artifacts to [Sonatype Maven Central](https://central.sonatype.org).
+It uses the standard plugins such as `org.gradle.maven-publish` and `org.gradle.signing`.
 
 ## Usage
 
-### Add plugin dependency
+### Add plugin repository
 
 ```kotlin
-buildscript {
-    dependencies {
-        classpath("dev.g000sha256:sonatype-maven-central:0.0.7")
-    }
-
-    repositories {
-        mavenCentral()
-    }
+repositories {
+    gradlePluginPortal()
 }
 ```
 
-### Add and configure necessary plugins
+### Add Sonatype plugin and necessary plugins
 
 ```kotlin
 plugins {
+    id("dev.g000sha256.sonatype-maven-central") version "0.0.7"
     id("org.gradle.maven-publish")
     id("org.gradle.signing")
 }
-
-publishing {
-    publications {
-        register<MavenPublication>("<your variant>") {
-            // configuration
-        }
-    }
-}
-
-signing {
-    val publication = publishing.publications["<your variant>"]
-    sign(publication)
-}
 ```
 
-### Configure GPG credentials
-
-Store your [GPG credentials](https://central.sonatype.org/publish/requirements/gpg) securely in your user's Gradle properties
-file (`~/.gradle/gradle.properties`):
-
-```properties
-signing.keyId=<your keyId>
-signing.password=<your password>
-signing.secretKeyRingFile=<your path to secring.gpg file>
-```
-
-### Configure Sonatype credentials
-
-Store your [Sonatype credentials](https://central.sonatype.org/publish/generate-portal-token) securely in your user's Gradle
-properties file (`~/.gradle/gradle.properties`):
-
-```properties
-SonatypeMavenCentral.Username=<your sonatype username>
-SonatypeMavenCentral.Password=<your sonatype password>
-```
-
-### Configure plugin
-
-Use one of the types for publishing:
-
-- `SonatypeMavenCentralType.Automatic` - a deployment will go through validation and, if it passes, automatically proceed to
-  publish to Maven Central
-- `SonatypeMavenCentralType.Manual` (default) - a deployment will go through validation and require the user to publish manually
-  it via the [Portal UI](https://central.sonatype.com/publishing/deployments)
+### Configure Sonatype plugin
 
 ```kotlin
 import g000sha256.sonatype_maven_central.SonatypeMavenCentralType
-import g000sha256.sonatype_maven_central.sonatypeMavenCentralRepository
 
 sonatypeMavenCentralRepository {
     type = SonatypeMavenCentralType.Manual
@@ -84,6 +36,51 @@ sonatypeMavenCentralRepository {
         password = properties["SonatypeMavenCentral.Password"] as String?
     }
 }
+```
+
+You can configure the plugin by selecting one of the following types for publishing:
+
+- `SonatypeMavenCentralType.Manual` (default) - a deployment will go through validation and require the user to publish manually
+  it via the [Portal UI](https://central.sonatype.com/publishing/deployments)
+- `SonatypeMavenCentralType.Automatic` - a deployment will go through validation and, if it passes, automatically proceed to
+  publish to Maven Central
+
+### Configure necessary plugins
+
+```kotlin
+publishing {
+    publications {
+        register<MavenPublication>("<your publication variant>") {
+            // configuration
+        }
+    }
+}
+
+signing {
+    val publication = publishing.publications["<your publication variant>"]
+    sign(publication)
+}
+```
+
+### Configure GPG credentials
+
+Store your [GPG credentials](https://central.sonatype.org/publish/requirements/gpg) securely in your private Gradle properties
+file (`~/.gradle/gradle.properties`):
+
+```properties
+signing.keyId=<your signing keyId>
+signing.password=<your signing password>
+signing.secretKeyRingFile=<your path to secring.gpg file>
+```
+
+### Configure Sonatype credentials
+
+Store your [Sonatype credentials](https://central.sonatype.org/publish/generate-portal-token) securely in your private Gradle
+properties file (`~/.gradle/gradle.properties`):
+
+```properties
+SonatypeMavenCentral.Username=<your sonatype username>
+SonatypeMavenCentral.Password=<your sonatype password>
 ```
 
 ### Publishing
@@ -100,10 +97,8 @@ sonatypeMavenCentralRepository {
 ./gradlew publishAllPublicationsToSonatypeMavenCentralRepository
 ```
 
-#### Publish specific variant to the Sonatype repository
-
-Replace `<your variant>`
+#### Publish a specific variant to the Sonatype repository
 
 ```shell
-./gradlew publish<your variant>PublicationToSonatypeMavenCentralRepository
+./gradlew publish<your publication variant>PublicationToSonatypeMavenCentralRepository
 ```
