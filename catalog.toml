@@ -1,6 +1,6 @@
 [versions]
-kotlin = "2.0.0"
-ktor = "2.3.11"
+kotlin = "2.0.10"
+ktor = "2.3.12"
 
 [libraries]
 library-jetbrains-annotations = { module = "org.jetbrains:annotations", version = "24.1.0" }
@@ -12,5 +12,5 @@ library-ktor-java = { module = "io.ktor:ktor-client-java", version.ref = "ktor" 
 [plugins]
 gradle-pluginPublish = { id = "com.gradle.plugin-publish", version = "1.2.1" }
 
-jetbrains-binaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.16.2" }
+jetbrains-binaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.16.3" }
 jetbrains-kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
