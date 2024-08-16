@@ -26,12 +26,15 @@ import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import org.gradle.api.provider.Property
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
 
 internal fun Project.initPlugin(
     usernameProperty: Property<String>,
     passwordProperty: Property<String>,
     typeProperty: Property<SonatypeMavenCentralType>
 ) {
+    plugins.apply(MavenPublishPlugin::class.java)
+
     val buildDirectory = layout.buildDirectory.asFile.get()
     val pluginDirectory = createDirectory(buildDirectory, "sonatype_maven_central")
     val bundleDirectory = createDirectory(pluginDirectory, "bundle")
@@ -39,33 +42,31 @@ internal fun Project.initPlugin(
 
     initShutdownHook { clearDirectories(bundleDirectory, repositoryDirectory) }
 
-    afterEvaluate {
-        val publishingExtension = extensions.getByType(PublishingExtension::class.java)
+    val publishingExtension = extensions.getByType(PublishingExtension::class.java)
 
-        publishingExtension.repositories.maven { it.init(repositoryDirectory) }
+    publishingExtension.repositories.maven { it.init(repositoryDirectory) }
 
-        publishingExtension.publications.withType(MavenPublication::class.java) { mavenPublication ->
-            val variant = mavenPublication.name.replaceFirstChar(Char::uppercase)
+    publishingExtension.publications.withType(MavenPublication::class.java) { mavenPublication ->
+        val variant = mavenPublication.name.replaceFirstChar(Char::uppercase)
 
-            tasks.named("publish${variant}PublicationToSonatypeMavenCentralRepository") {
-                it.doLast {
-                    val username = usernameProperty.getTrimmedValue()
-                    val password = passwordProperty.getTrimmedValue()
+        tasks.named("publish${variant}PublicationToSonatypeMavenCentralRepository") {
+            it.doLast {
+                val username = usernameProperty.getTrimmedValue()
+                val password = passwordProperty.getTrimmedValue()
 
-                    requireNotNull(username) { "Username is null or blank" }
-                    requireNotNull(password) { "Password is null or blank" }
+                requireNotNull(username) { "Username is null or blank" }
+                requireNotNull(password) { "Password is null or blank" }
 
-                    val type = typeProperty.getStringType()
+                val type = typeProperty.getStringType()
 
-                    val versionDirectory = mavenPublication.getVersionDirectory(repositoryDirectory)
-                    val deploymentName = mavenPublication.getDeploymentName()
-                    val bundleFile = File(bundleDirectory, "$deploymentName.zip")
+                val versionDirectory = mavenPublication.getVersionDirectory(repositoryDirectory)
+                val deploymentName = mavenPublication.getDeploymentName()
+                val bundleFile = File(bundleDirectory, "$deploymentName.zip")
 
-                    bundleFile.delete()
-                    zipFromDirectory(repositoryDirectory, versionDirectory, bundleFile)
+                bundleFile.delete()
+                zipFromDirectory(repositoryDirectory, versionDirectory, bundleFile)
 
-                    uploadBundle(username, password, deploymentName, type, bundleFile)
-                }
+                uploadBundle(username, password, deploymentName, type, bundleFile)
             }
         }
     }
