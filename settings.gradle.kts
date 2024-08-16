@@ -1,7 +1,10 @@
 rootProject.name = "sonatype-maven-central"
 
 pluginManagement {
-    repositories { mavenCentral() }
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
 }
 
 dependencyResolutionManagement {

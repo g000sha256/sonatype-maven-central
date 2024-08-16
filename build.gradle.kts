@@ -10,9 +10,11 @@ buildscript {
 }
 
 plugins {
+    alias(catalog.plugins.gradle.pluginPublish)
     alias(catalog.plugins.jetbrains.binaryCompatibilityValidator)
     alias(catalog.plugins.jetbrains.dokka)
     alias(catalog.plugins.jetbrains.kotlinJvm)
+    id("org.gradle.java-gradle-plugin")
     id("org.gradle.maven-publish")
     id("org.gradle.signing")
 }
@@ -38,15 +40,10 @@ kotlin {
 
                 implementation(catalog.library.ktor.core)
                 implementation(catalog.library.ktor.java)
-
-                val gradleKotlinDsl = gradleKotlinDsl()
-                implementation(gradleKotlinDsl)
             }
         }
     }
 }
-
-val sourcesJarTaskProvider = tasks.kotlinSourcesJar
 
 val dokkaJavaDocTaskProvider = tasks.dokkaHtml
 
@@ -59,19 +56,22 @@ val dokkaJavaDocJarTaskProvider = tasks.register<Jar>("dokkaJavaDocJar") {
     from(dokkaJavaDocTask.outputDirectory)
 }
 
+val pomName = "Sonatype Maven Central publish plugin"
+val pomDescription = "A plugin to publish artifacts to the Sonatype Maven Central repository"
+val pomUrl = "https://github.com/g000sha256/sonatype-maven-central"
+
 publishing {
     publications {
-        register<MavenPublication>("release") {
-            val component = components["kotlin"]
-            from(component)
-
-            artifact(sourcesJarTaskProvider)
-            artifact(dokkaJavaDocJarTaskProvider)
+        withType<MavenPublication> {
+            if (name == "pluginMaven") {
+                pom {
+                    name = pomName
+                    description = pomDescription
+                }
+            }
 
             pom {
-                name = "Sonatype Maven Central"
-                description = "Sonatype Maven Central publish plugin"
-                url = "https://github.com/g000sha256/sonatype-maven-central"
+                url = pomUrl
                 inceptionYear = "2024"
 
                 licenses {
@@ -105,13 +105,29 @@ publishing {
     }
 }
 
+@Suppress("UnstableApiUsage")
+gradlePlugin {
+    vcsUrl = pomUrl
+    website = pomUrl
+
+    plugins {
+        register("release") {
+            id = "dev.g000sha256.sonatype-maven-central"
+            implementationClass = "g000sha256.sonatype_maven_central.SonatypeMavenCentralPlugin"
+
+            displayName = pomName
+            description = pomDescription
+            tags = setOf("artifact", "central", "kotlin", "maven", "publish", "repository", "sonatype", "upload")
+        }
+    }
+}
+
 signing {
     val key = getProperty("Signing.Key") ?: getEnvironment("SIGNING_KEY")
     val password = getProperty("Signing.Password") ?: getEnvironment("SIGNING_PASSWORD")
     useInMemoryPgpKeys(key, password)
 
-    val publication = publishing.publications["release"]
-    sign(publication)
+    sign(publishing.publications)
 }
 
 sonatypeMavenCentralRepository {
