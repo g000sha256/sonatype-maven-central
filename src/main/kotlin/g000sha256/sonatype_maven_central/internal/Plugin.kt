@@ -27,6 +27,7 @@ import org.gradle.api.provider.Property
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
+import org.gradle.plugins.signing.SigningPlugin
 
 internal fun Project.initPlugin(
     usernameProperty: Property<String>,
@@ -34,6 +35,7 @@ internal fun Project.initPlugin(
     typeProperty: Property<SonatypeMavenCentralType>
 ) {
     plugins.apply(MavenPublishPlugin::class.java)
+    plugins.apply(SigningPlugin::class.java)
 
     val buildDirectory = layout.buildDirectory.asFile.get()
     val pluginDirectory = createDirectory(buildDirectory, "sonatype_maven_central")
@@ -51,8 +53,8 @@ internal fun Project.initPlugin(
 
         tasks.named("publish${variant}PublicationToSonatypeMavenCentralRepository") {
             it.doLast {
-                val username = usernameProperty.getTrimmedValue()
-                val password = passwordProperty.getTrimmedValue()
+                val username = usernameProperty.getTrimmedValue() ?: getTrimmedProperty("SonatypeMavenCentral.Username")
+                val password = passwordProperty.getTrimmedValue() ?: getTrimmedProperty("SonatypeMavenCentral.Password")
 
                 requireNotNull(username) { "Username is null or blank" }
                 requireNotNull(password) { "Password is null or blank" }
@@ -73,17 +75,21 @@ internal fun Project.initPlugin(
 }
 
 private fun Property<String>.getTrimmedValue(): String? {
-    val rawValue = getOrNull()
-    if (rawValue == null) {
+    val value = getOrNull()
+    return value?.trimOrNull()
+}
+
+private fun Project.getTrimmedProperty(key: String): String? {
+    val value = properties[key] as String?
+    return value?.trimOrNull()
+}
+
+private fun String.trimOrNull(): String? {
+    val value = trim()
+    if (value.length == 0) {
         return null
     }
-
-    val trimmedValue = rawValue.trim()
-    if (trimmedValue.length == 0) {
-        return null
-    }
-
-    return trimmedValue
+    return value
 }
 
 private fun Property<SonatypeMavenCentralType>.getStringType(): String {
