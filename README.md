@@ -23,7 +23,7 @@ pluginManagement {
 
 ```kotlin
 plugins {
-    id("dev.g000sha256.sonatype-maven-central") version "0.0.7"
+    id("dev.g000sha256.sonatype-maven-central") version "0.0.8"
 }
 ```
 

@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 group = "dev.g000sha256"
-version = "0.0.7"
+version = "0.0.8"
 
 plugins {
     alias(catalog.plugins.gradle.pluginPublish)
