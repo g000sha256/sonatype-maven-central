@@ -1,9 +1,9 @@
-# Sonatype Maven Central publish plugin
+# Maven Central publish plugin
 
 [![Gradle Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/dev.g000sha256.sonatype-maven-central?logo=gradle&label=Gradle%20Plugin%20Portal&labelColor=02303A&color=blue)](https://plugins.gradle.org/plugin/dev.g000sha256.sonatype-maven-central)
 
-This plugin simplifies the process of publishing your artifacts to the
-[Sonatype Maven Central](https://central.sonatype.org) repository. It utilizes standard plugins
+This `Gradle` plugin simplifies the process of publishing your artifacts to the
+[Sonatype Maven Central Repository](https://central.sonatype.com). It utilizes standard plugins
 such as the [Maven Publish Plugin](https://docs.gradle.org/current/userguide/publishing_maven.html)
 and the [Signing Plugin](https://docs.gradle.org/current/userguide/signing_plugin.html).
 
@@ -15,6 +15,7 @@ and the [Signing Plugin](https://docs.gradle.org/current/userguide/signing_plugi
 pluginManagement {
     repositories {
         gradlePluginPortal()
+        mavenCentral()
     }
 }
 ```
@@ -42,13 +43,13 @@ The plugin can have two types of publishing:
 - `SonatypeMavenCentralType.Automatic` - a deployment will go through validation and, if it passes,
   will be automatically published to `Maven Central`
 
-You can override the type using a plugin extension:
+By default, the type is set as `Manual`, but you can override it using a plugin extension:
 
 ```kotlin
 import g000sha256.sonatype_maven_central.SonatypeMavenCentralType
 
 sonatypeMavenCentralRepository {
-    type = SonatypeMavenCentralType.Manual
+    type = SonatypeMavenCentralType.Automatic
 }
 ```
 
@@ -62,7 +63,7 @@ SonatypeMavenCentral.Username=<your sonatype username>
 SonatypeMavenCentral.Password=<your sonatype password>
 ```
 
-You can override the credentials using a plugin extension:
+You also can override the credentials using a plugin extension:
 
 ```kotlin
 sonatypeMavenCentralRepository {
