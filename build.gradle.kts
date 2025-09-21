@@ -1,20 +1,23 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 group = "dev.g000sha256"
-version = "1.0.0"
+version = "1.1.0"
 
 plugins {
-    alias(catalog.plugins.gradle.pluginPublish)
-    alias(catalog.plugins.jetbrains.binaryCompatibilityValidator)
-    alias(catalog.plugins.jetbrains.kotlinJvm)
-    id("org.gradle.java-gradle-plugin")
-    id("org.gradle.maven-publish")
-    id("org.gradle.signing")
+    alias(catalog.plugins.g000sha256.sonatypeMavenCentral)
+    alias(catalog.plugins.gradle.javaGradlePlugin)
+    alias(catalog.plugins.gradle.mavenPublish)
+    alias(catalog.plugins.gradle.signing)
+    alias(catalog.plugins.jetBrains.binaryCompatibilityValidator)
+    alias(catalog.plugins.jetBrains.kotlin)
 }
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
+
+    withJavadocJar()
+    withSourcesJar()
 }
 
 kotlin {
@@ -24,36 +27,28 @@ kotlin {
         jvmTarget = JvmTarget.JVM_11
         moduleName = "g000sha256.sonatype_maven_central"
     }
-
-    sourceSets {
-        main {
-            dependencies {
-                implementation(catalog.library.jetbrains.annotations)
-                implementation(catalog.library.jetbrains.kotlin)
-
-                implementation(catalog.library.ktor.core)
-                implementation(catalog.library.ktor.java)
-            }
-        }
-    }
 }
 
-val pomName = "Sonatype Maven Central publish plugin"
-val pomDescription = "A plugin to publish artifacts to the Sonatype Maven Central repository"
-val pomUrl = "https://github.com/g000sha256/sonatype-maven-central"
+dependencies {
+    implementation(catalog.libs.jetBrains.annotations)
+    implementation(catalog.libs.jetBrains.kotlin)
+
+    implementation(catalog.libs.jetBrains.coroutines)
+    implementation(catalog.libs.ktor.client.core)
+    implementation(catalog.libs.ktor.client.java)
+    implementation(catalog.libs.ktor.http)
+    implementation(catalog.libs.ktor.io)
+    implementation(catalog.libs.ktor.utils)
+}
 
 publishing {
     publications {
         withType<MavenPublication> {
-            if (name == "pluginMaven") {
-                pom {
-                    name = pomName
-                    description = pomDescription
-                }
-            }
-
             pom {
-                url = pomUrl
+                name = "Sonatype Maven Central publish plugin"
+                description = "A plugin to publish artifacts to the Sonatype Maven Central repository"
+
+                url = "https://github.com/g000sha256/sonatype-maven-central"
                 inceptionYear = "2024"
 
                 licenses {
@@ -74,8 +69,8 @@ publishing {
 
                 scm {
                     connection = "scm:git:git://github.com/g000sha256/sonatype-maven-central.git"
-                    developerConnection = "scm:git:ssh://github.com:g000sha256/sonatype-maven-central.git"
-                    url = "https://github.com/g000sha256/sonatype-maven-central/tree/master"
+                    developerConnection = "scm:git:git@github.com:g000sha256/sonatype-maven-central.git"
+                    url = "https://github.com/g000sha256/sonatype-maven-central"
                 }
 
                 issueManagement {
@@ -87,19 +82,11 @@ publishing {
     }
 }
 
-@Suppress("UnstableApiUsage")
 gradlePlugin {
-    vcsUrl = pomUrl
-    website = pomUrl
-
     plugins {
         register("release") {
             id = "dev.g000sha256.sonatype-maven-central"
             implementationClass = "g000sha256.sonatype_maven_central.SonatypeMavenCentralPlugin"
-
-            displayName = pomName
-            description = pomDescription
-            tags = setOf("artifact", "central", "kotlin", "maven", "publish", "repository", "sonatype", "upload")
         }
     }
 }
@@ -110,6 +97,13 @@ signing {
     useInMemoryPgpKeys(key, password)
 
     sign(publishing.publications)
+}
+
+sonatypeMavenCentralRepository {
+    credentials {
+        username = getProperty("SonatypeMavenCentral.Username") ?: getEnvironment("SONATYPE_USERNAME")
+        password = getProperty("SonatypeMavenCentral.Password") ?: getEnvironment("SONATYPE_PASSWORD")
+    }
 }
 
 private fun getProperty(key: String): String? {
