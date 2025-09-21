@@ -5,11 +5,11 @@ version = "1.0.0"
 
 plugins {
     alias(catalog.plugins.g000sha256.sonatypeMavenCentral)
-    alias(catalog.plugins.jetbrains.binaryCompatibilityValidator)
-    alias(catalog.plugins.jetbrains.kotlinJvm)
-    id("org.gradle.java-gradle-plugin")
-    id("org.gradle.maven-publish")
-    id("org.gradle.signing")
+    alias(catalog.plugins.gradle.javaGradlePlugin)
+    alias(catalog.plugins.gradle.mavenPublish)
+    alias(catalog.plugins.gradle.signing)
+    alias(catalog.plugins.jetBrains.binaryCompatibilityValidator)
+    alias(catalog.plugins.jetBrains.kotlin)
 }
 
 java {
@@ -27,18 +27,18 @@ kotlin {
         jvmTarget = JvmTarget.JVM_11
         moduleName = "g000sha256.sonatype_maven_central"
     }
+}
 
-    sourceSets {
-        main {
-            dependencies {
-                implementation(catalog.library.jetbrains.annotations)
-                implementation(catalog.library.jetbrains.kotlin)
+dependencies {
+    implementation(catalog.libs.jetBrains.annotations)
+    implementation(catalog.libs.jetBrains.kotlin)
 
-                implementation(catalog.library.ktor.core)
-                implementation(catalog.library.ktor.java)
-            }
-        }
-    }
+    implementation(catalog.libs.jetBrains.coroutines)
+    implementation(catalog.libs.ktor.client.core)
+    implementation(catalog.libs.ktor.client.java)
+    implementation(catalog.libs.ktor.http)
+    implementation(catalog.libs.ktor.io)
+    implementation(catalog.libs.ktor.utils)
 }
 
 publishing {
