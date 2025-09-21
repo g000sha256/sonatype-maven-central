@@ -35,8 +35,8 @@ jobs:
 
       - name: Publish
         env:
-          PUBLISH_KEY: ${{ secrets.PUBLISH_KEY }}
-          PUBLISH_SECRET: ${{ secrets.PUBLISH_SECRET }}
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-        run: ./gradlew publishPlugins -Pgradle.publish.key=$PUBLISH_KEY -Pgradle.publish.secret=$PUBLISH_SECRET
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+        run: ./gradlew publish
