@@ -1,6 +1,6 @@
 # Maven Central publish plugin
 
-[![Gradle Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/dev.g000sha256.sonatype-maven-central?logo=gradle&label=Gradle%20Plugin%20Portal&labelColor=02303A&color=blue)](https://plugins.gradle.org/plugin/dev.g000sha256.sonatype-maven-central)
+[![Maven Central](https://img.shields.io/maven-central/v/dev.g000sha256/sonatype-maven-central?label=Maven%20Central&labelColor=171C35&color=E38E33)](https://central.sonatype.com/artifact/dev.g000sha256/sonatype-maven-central)
 
 This `Gradle` plugin simplifies the process of publishing your artifacts to the
 [Sonatype Maven Central Repository](https://central.sonatype.com). It utilizes standard plugins
@@ -14,7 +14,6 @@ and the [Signing Plugin](https://docs.gradle.org/current/userguide/signing_plugi
 ```kotlin
 pluginManagement {
     repositories {
-        gradlePluginPortal()
         mavenCentral()
     }
 }
