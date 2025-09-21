@@ -2,8 +2,8 @@
 annotations = "26.0.2"
 binaryCompatibilityValidator = "0.18.1"
 coroutines = "1.10.2"
-kotlin = "2.2.20"
-ktor = "3.3.0"
+kotlin = "2.1.21"
+ktor = "3.2.3"
 sonatypeMavenCentral = "1.0.0"
 
 [plugins]
@@ -16,7 +16,7 @@ jetBrains-kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 
 [libraries]
 libs-jetBrains-annotations = { module = "org.jetbrains:annotations", version.ref = "annotations" }
-libs-jetBrains-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version.ref = "coroutines" }
+libs-jetBrains-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 libs-jetBrains-kotlin = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 libs-ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 libs-ktor-client-java = { module = "io.ktor:ktor-client-java", version.ref = "ktor" }
