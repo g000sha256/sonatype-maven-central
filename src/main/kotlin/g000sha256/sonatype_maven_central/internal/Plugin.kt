@@ -37,6 +37,8 @@ internal fun Project.initPlugin(
     plugins.apply(MavenPublishPlugin::class.java)
     plugins.apply(SigningPlugin::class.java)
 
+    typeProperty.convention(SonatypeMavenCentralType.Manual)
+
     val buildDirectory = layout.buildDirectory.asFile.get()
     val pluginDirectory = createDirectory(buildDirectory, "sonatype_maven_central")
     val bundleDirectory = createDirectory(pluginDirectory, "bundle")
@@ -93,7 +95,7 @@ private fun String.trimOrNull(): String? {
 }
 
 private fun Property<SonatypeMavenCentralType>.getStringType(): String {
-    val type = getOrElse(SonatypeMavenCentralType.Manual)
+    val type = get()
     when (type) {
         SonatypeMavenCentralType.Automatic -> return "AUTOMATIC"
         SonatypeMavenCentralType.Manual -> return "USER_MANAGED"
