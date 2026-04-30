@@ -18,8 +18,14 @@ package g000sha256.sonatype_maven_central
 
 import org.gradle.api.provider.Property
 
+/**
+ * Sonatype Maven Central credentials (portal username and password).
+ */
 public interface SonatypeMavenCentralCredentials {
 
+    /** Sonatype portal username. */
     public val username: Property<String>
+
+    /** Sonatype portal password. */
     public val password: Property<String>
 }

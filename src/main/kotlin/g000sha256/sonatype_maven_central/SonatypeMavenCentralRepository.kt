@@ -18,9 +18,14 @@ package g000sha256.sonatype_maven_central
 
 import org.gradle.api.provider.Property
 
+/**
+ * DSL extension for configuring the Sonatype Maven Central plugin.
+ */
 public interface SonatypeMavenCentralRepository {
 
+    /** Publishing strategy. Defaults to [SonatypeMavenCentralType.Manual]. */
     public val type: Property<SonatypeMavenCentralType>
 
+    /** Configures Sonatype credentials. */
     public fun credentials(block: SonatypeMavenCentralCredentials.() -> Unit)
 }

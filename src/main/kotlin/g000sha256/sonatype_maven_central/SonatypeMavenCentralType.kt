@@ -16,9 +16,14 @@
 
 package g000sha256.sonatype_maven_central
 
+/**
+ * Publishing strategy for a deployment uploaded to Sonatype Maven Central.
+ */
 public sealed class SonatypeMavenCentralType {
 
+    /** Validate the deployment and publish it to Maven Central automatically. */
     public object Automatic : SonatypeMavenCentralType()
 
+    /** Validate the deployment and wait for the user to publish it via the Portal UI. */
     public object Manual : SonatypeMavenCentralType()
 }

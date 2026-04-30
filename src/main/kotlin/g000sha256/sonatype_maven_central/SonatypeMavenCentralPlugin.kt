@@ -31,6 +31,12 @@ public fun Project.sonatypeMavenCentralRepository(block: SonatypeMavenCentralRep
     initPlugin(credentials.username, credentials.password, repository.type)
 }
 
+/**
+ * Gradle plugin that configures publishing to the Sonatype Maven Central repository.
+ *
+ * Adds the `sonatypeMavenCentralRepository` DSL extension to the project and applies
+ * the Maven Publish and Signing plugins automatically.
+ */
 public class SonatypeMavenCentralPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
