@@ -54,7 +54,7 @@ internal fun Project.initPlugin(
         val variant = mavenPublication.name.replaceFirstChar(Char::uppercase)
 
         tasks.named("publish${variant}PublicationToSonatypeMavenCentralRepository") {
-            it.doLast {
+            it.doLast { task ->
                 val username = usernameProperty.getTrimmedValue() ?: getTrimmedProperty("SonatypeMavenCentral.Username")
                 val password = passwordProperty.getTrimmedValue() ?: getTrimmedProperty("SonatypeMavenCentral.Password")
 
@@ -70,7 +70,7 @@ internal fun Project.initPlugin(
                 bundleFile.delete()
                 zipFromDirectory(repositoryDirectory, versionDirectory, bundleFile)
 
-                uploadBundle(username, password, deploymentName, type, bundleFile)
+                uploadBundle(username, password, deploymentName, type, bundleFile, task.logger)
             }
         }
     }

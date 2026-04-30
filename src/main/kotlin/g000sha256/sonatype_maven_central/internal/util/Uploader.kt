@@ -40,16 +40,24 @@ import io.ktor.http.content.PartData
 import io.ktor.util.cio.readChannel
 import java.io.File
 import kotlinx.coroutines.runBlocking
+import org.gradle.api.logging.Logger
 
 private val httpClient by lazy { HttpClient(Java) }
 
-internal fun uploadBundle(username: String, password: String, name: String, type: String, bundleFile: File) {
+internal fun uploadBundle(
+    username: String,
+    password: String,
+    name: String,
+    type: String,
+    bundleFile: File,
+    logger: Logger,
+) {
     checkParameters(bundleFile)
 
     val token = encodeBase64("$username:$password")
     val deploymentId = runBlocking { upload(token, name, type, bundleFile) }
 
-    println("The bundle was successfully uploaded to Sonatype Maven Central: deploymentId=$deploymentId")
+    logger.lifecycle("The bundle was successfully uploaded to Sonatype Maven Central: deploymentId=$deploymentId")
 }
 
 private fun checkParameters(bundleFile: File) {
