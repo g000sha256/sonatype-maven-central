@@ -21,16 +21,6 @@ import javax.inject.Inject
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-@Deprecated("Use sonatypeMavenCentralRepository directly without importing the extension.")
-public fun Project.sonatypeMavenCentralRepository(block: SonatypeMavenCentralRepository.() -> Unit) {
-    val credentials = objects.newInstance(SonatypeMavenCentralCredentials::class.java)
-    val repository = objects.newInstance(SonatypeMavenCentralPlugin.RepositoryWrapper::class.java, credentials)
-
-    repository.block()
-
-    initPlugin(credentials.username, credentials.password, repository.type)
-}
-
 /**
  * Gradle plugin that configures publishing to the Sonatype Maven Central repository.
  *
