@@ -16,6 +16,7 @@
 
 package g000sha256.sonatype_maven_central.internal.util
 
+import g000sha256.sonatype_maven_central.SonatypeMavenCentralType
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.java.Java
@@ -48,14 +49,14 @@ internal fun uploadBundle(
     username: String,
     password: String,
     name: String,
-    type: String,
+    type: SonatypeMavenCentralType,
     bundleFile: File,
     logger: Logger,
 ) {
     checkParameters(bundleFile)
 
     val token = encodeBase64("$username:$password")
-    val deploymentId = runBlocking { upload(token, name, type, bundleFile) }
+    val deploymentId = runBlocking { upload(token, name, type.type, bundleFile) }
 
     logger.lifecycle("The bundle was successfully uploaded to Sonatype Maven Central: deploymentId=$deploymentId")
 }

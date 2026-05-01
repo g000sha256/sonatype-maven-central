@@ -21,9 +21,17 @@ package g000sha256.sonatype_maven_central
  */
 public sealed class SonatypeMavenCentralType {
 
+    internal abstract val type: String
+
     /** Validate the deployment and publish it to Maven Central automatically. */
-    public object Automatic : SonatypeMavenCentralType()
+    public object Automatic : SonatypeMavenCentralType() {
+
+        override val type = "AUTOMATIC"
+    }
 
     /** Validate the deployment and wait for the user to publish it via the Portal UI. */
-    public object Manual : SonatypeMavenCentralType()
+    public object Manual : SonatypeMavenCentralType() {
+
+        override val type = "USER_MANAGED"
+    }
 }

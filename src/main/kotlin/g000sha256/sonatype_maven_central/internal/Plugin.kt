@@ -55,13 +55,13 @@ internal fun Project.initPlugin(
 
         tasks.named("publish${variant}PublicationToSonatypeMavenCentralRepository") {
             it.doLast { task ->
-                val username = usernameProperty.getTrimmedValue() ?: getTrimmedProperty("SonatypeMavenCentral.Username")
-                val password = passwordProperty.getTrimmedValue() ?: getTrimmedProperty("SonatypeMavenCentral.Password")
+                val username = usernameProperty.getTrimmedValue() ?: getTrimmedGradleProperty("SonatypeMavenCentral.Username")
+                val password = passwordProperty.getTrimmedValue() ?: getTrimmedGradleProperty("SonatypeMavenCentral.Password")
 
                 requireNotNull(username) { "Missing Sonatype portal username. Configure credentials { username = ... }, or set the SonatypeMavenCentral.Username Gradle property." }
                 requireNotNull(password) { "Missing Sonatype portal password. Configure credentials { password = ... }, or set the SonatypeMavenCentral.Password Gradle property." }
 
-                val type = typeProperty.getStringType()
+                val type = typeProperty.get()
 
                 val versionDirectory = mavenPublication.getVersionDirectory(repositoryDirectory)
                 val deploymentName = mavenPublication.getDeploymentName()
@@ -81,25 +81,14 @@ private fun Property<String>.getTrimmedValue(): String? {
     return value?.trimOrNull()
 }
 
-private fun Project.getTrimmedProperty(key: String): String? {
+private fun Project.getTrimmedGradleProperty(key: String): String? {
     val value = properties[key] as String?
     return value?.trimOrNull()
 }
 
 private fun String.trimOrNull(): String? {
     val value = trim()
-    if (value.length == 0) {
-        return null
-    }
-    return value
-}
-
-private fun Property<SonatypeMavenCentralType>.getStringType(): String {
-    val type = get()
-    when (type) {
-        SonatypeMavenCentralType.Automatic -> return "AUTOMATIC"
-        SonatypeMavenCentralType.Manual -> return "USER_MANAGED"
-    }
+    return value.ifEmpty { null }
 }
 
 private fun clearDirectories(bundleDirectory: File, repositoryDirectory: File) {
