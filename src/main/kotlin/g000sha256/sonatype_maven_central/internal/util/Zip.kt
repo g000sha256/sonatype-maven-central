@@ -35,7 +35,7 @@ private fun checkParameters(rootDirectory: File, filesDirectory: File, zipFile: 
     filesDirectory.ensureExists()
     filesDirectory.ensureDirectory()
 
-    filesDirectory.ensureIsInsideIn(rootDirectory)
+    filesDirectory.ensureIsInside(rootDirectory)
 
     zipFile.ensureNotExists()
 }

@@ -42,7 +42,7 @@ internal fun File.ensureNotDirectory() {
     require(!isDirectory) { "The path $this is a directory" }
 }
 
-internal fun File.ensureIsInsideIn(rootDirectory: File) {
+internal fun File.ensureIsInside(rootDirectory: File) {
     val isInside = startsWith(rootDirectory)
     require(isInside) { "The path $this isn't inside the directory $rootDirectory" }
 }
