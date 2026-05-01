@@ -32,8 +32,7 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: 8.14.3
-          cache-disabled: false
+          gradle-version: 9.5.0
 
       - name: Assemble
         run: ./gradlew assemble
