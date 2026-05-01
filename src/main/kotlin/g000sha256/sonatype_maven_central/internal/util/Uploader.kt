@@ -17,49 +17,47 @@
 package g000sha256.sonatype_maven_central.internal.util
 
 import g000sha256.sonatype_maven_central.SonatypeMavenCentralType
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.engine.java.Java
-import io.ktor.client.request.HttpRequestBuilder
-import io.ktor.client.request.forms.ChannelProvider
-import io.ktor.client.request.forms.FormBuilder
-import io.ktor.client.request.forms.MultiPartFormDataContent
-import io.ktor.client.request.forms.formData
-import io.ktor.client.request.header
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.client.statement.HttpResponse
-import io.ktor.http.ContentDisposition
-import io.ktor.http.ContentType
-import io.ktor.http.Headers
-import io.ktor.http.HeadersBuilder
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.URLProtocol
-import io.ktor.http.appendPathSegments
-import io.ktor.http.content.PartData
-import io.ktor.util.cio.readChannel
+import java.io.ByteArrayInputStream
 import java.io.File
-import kotlinx.coroutines.runBlocking
+import java.io.FileInputStream
+import java.io.InputStream
+import java.io.SequenceInputStream
+import java.net.URI
+import java.net.URLEncoder
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpRequest.BodyPublishers
+import java.net.http.HttpResponse
+import java.net.http.HttpResponse.BodyHandlers
+import java.nio.charset.StandardCharsets
+import java.time.Duration
+import java.util.Collections
 import org.gradle.api.logging.Logger
 
-private val httpClient by lazy { HttpClient(Java) }
+private val connectTimeout = Duration.ofSeconds(10)
+
+private val httpClient by lazy {
+    return@lazy HttpClient
+        .newBuilder()
+        .connectTimeout(connectTimeout)
+        .build()
+}
 
 internal fun uploadBundle(
     username: String,
     password: String,
     name: String,
-    type: SonatypeMavenCentralType,
+    publishingType: SonatypeMavenCentralType,
     bundleFile: File,
     logger: Logger,
 ) {
     checkParameters(bundleFile)
 
     val token = encodeBase64("$username:$password")
-    val deploymentId = runBlocking { upload(token, name, type.type, bundleFile) }
+    val deploymentId = upload(token, name, publishingType.type, bundleFile)
 
     logger.lifecycle("The bundle was successfully uploaded to Sonatype Maven Central: deploymentId=$deploymentId")
-    if (type == SonatypeMavenCentralType.Manual) {
+    if (publishingType == SonatypeMavenCentralType.Manual) {
         logger.lifecycle("The deployment is awaiting manual publishing at https://central.sonatype.com/publishing/deployments")
     }
 }
@@ -69,70 +67,60 @@ private fun checkParameters(bundleFile: File) {
     bundleFile.ensureNotDirectory()
 }
 
-private suspend fun upload(token: String, name: String, type: String, bundleFile: File): String {
+private fun upload(token: String, name: String, type: String, bundleFile: File): String {
     val response = postRequest(token, name, type, bundleFile)
     checkResponseStatus(response)
     return response.body()
 }
 
-private suspend fun postRequest(token: String, name: String, type: String, bundleFile: File): HttpResponse {
-    return httpClient.post {
-        url {
-            protocol = URLProtocol.HTTPS
-            host = "central.sonatype.com"
+private fun postRequest(token: String, name: String, type: String, bundleFile: File): HttpResponse<String> {
+    val uri = buildUri(name, type)
+    val boundary = System
+        .nanoTime()
+        .toString(radix = 16)
+        .let { text -> "SonatypeMavenCentralBoundary$text" }
+    val bodyPublisher = BodyPublishers.ofInputStream { buildMultipartStream(boundary, bundleFile) }
+    val bodyHandler = BodyHandlers.ofString()
+    return HttpRequest
+        .newBuilder()
+        .uri(uri)
+        .header("Authorization", "Bearer $token")
+        .header("Content-Type", "multipart/form-data; boundary=$boundary")
+        .POST(bodyPublisher)
+        .build()
+        .let { request -> httpClient.send(request, bodyHandler) }
+}
 
-            appendPathSegments("api", "v1", "publisher", "upload")
+private fun buildUri(name: String, type: String): URI {
+    val encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8)
+    val encodedType = URLEncoder.encode(type, StandardCharsets.UTF_8)
+    return URI.create("https://central.sonatype.com/api/v1/publisher/upload?name=$encodedName&publishingType=$encodedType")
+}
 
-            parameters.append("name", name)
-            parameters.append("publishingType", type)
-        }
-
-        header(HttpHeaders.Authorization, "Bearer $token")
-
-        body("bundle", bundleFile)
+private fun buildMultipartStream(boundary: String, file: File): InputStream {
+    val headerString = buildString {
+        append("--")
+        append(boundary)
+        append("\r\n")
+        append("Content-Disposition: form-data; name=\"bundle\"; filename=\"")
+        append(file.name)
+        append("\"\r\n")
+        append("Content-Type: application/octet-stream\r\n")
+        append("\r\n")
     }
+    val header = headerString.toByteArray(StandardCharsets.UTF_8)
+    val footerString = "\r\n--$boundary--\r\n"
+    val footer = footerString.toByteArray(StandardCharsets.UTF_8)
+    val streams = listOf(
+        ByteArrayInputStream(header),
+        FileInputStream(file),
+        ByteArrayInputStream(footer),
+    )
+    val enumeration = Collections.enumeration(streams)
+    return SequenceInputStream(enumeration)
 }
 
-private fun HttpRequestBuilder.body(key: String, file: File) {
-    val formData = formData { appendFile(key, file) }
-    multiPartFormDataBody(formData)
-}
-
-private fun FormBuilder.appendFile(key: String, file: File) {
-    val channelProvider = createFormPartChannelProvider(file)
-    val headers = Headers.build { appendFormPartHeaders(file.name) }
-    append(key, channelProvider, headers)
-}
-
-private fun createFormPartChannelProvider(file: File): ChannelProvider {
-    val size = file.length()
-    return ChannelProvider(size) { file.readChannel() }
-}
-
-private fun HeadersBuilder.appendFormPartHeaders(fileName: String) {
-    append(HttpHeaders.ContentDisposition) { appendFormPartHeadersFileName(fileName) }
-    append(HttpHeaders.ContentType) { append(ContentType.Application.OctetStream) }
-}
-
-private fun StringBuilder.appendFormPartHeadersFileName(fileName: String) {
-    append(ContentDisposition.Parameters.FileName)
-    append("=")
-    append("\"")
-    append(fileName)
-    append("\"")
-}
-
-private fun HeadersBuilder.append(key: String, builder: StringBuilder.() -> Unit) {
-    val value = buildString(builder)
-    append(key, value)
-}
-
-private fun HttpRequestBuilder.multiPartFormDataBody(formData: List<PartData>) {
-    val body = MultiPartFormDataContent(formData)
-    setBody(body)
-}
-
-private fun checkResponseStatus(response: HttpResponse) {
-    val status = response.status
-    require(status == HttpStatusCode.Created) { "Failed to upload bundle: HTTP ${status.value} ${status.description}" }
+private fun checkResponseStatus(response: HttpResponse<*>) {
+    val status = response.statusCode()
+    require(status == 201) { "Failed to upload bundle: HTTP $status" }
 }

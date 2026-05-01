@@ -25,15 +25,6 @@ kotlin {
     }
 }
 
-dependencies {
-    implementation(catalog.libs.jetBrains.coroutines)
-    implementation(catalog.libs.ktor.client.core)
-    implementation(catalog.libs.ktor.client.java)
-    implementation(catalog.libs.ktor.http)
-    implementation(catalog.libs.ktor.io)
-    implementation(catalog.libs.ktor.utils)
-}
-
 publishing {
     publications {
         withType<MavenPublication> {
