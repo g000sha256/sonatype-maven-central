@@ -26,23 +26,23 @@ internal fun createDirectory(rootDirectory: File, path: String): File {
 
 internal fun File.ensureExists() {
     val exists = exists()
-    require(exists) { "The file $this doesn't exist" }
+    require(exists) { "The path $this doesn't exist" }
 }
 
 internal fun File.ensureNotExists() {
     val exists = exists()
-    require(!exists) { "The file $this already exists" }
+    require(!exists) { "The path $this already exists" }
 }
 
 internal fun File.ensureDirectory() {
-    require(isDirectory) { "The file $this isn't a directory" }
+    require(isDirectory) { "The path $this isn't a directory" }
 }
 
 internal fun File.ensureNotDirectory() {
-    require(!isDirectory) { "The file $this is a directory" }
+    require(!isDirectory) { "The path $this is a directory" }
 }
 
 internal fun File.ensureIsInsideIn(rootDirectory: File) {
     val isInside = startsWith(rootDirectory)
-    require(isInside) { "The file $this isn't inside the directory $rootDirectory" }
+    require(isInside) { "The path $this isn't inside the directory $rootDirectory" }
 }

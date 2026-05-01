@@ -58,8 +58,8 @@ internal fun Project.initPlugin(
                 val username = usernameProperty.getTrimmedValue() ?: getTrimmedProperty("SonatypeMavenCentral.Username")
                 val password = passwordProperty.getTrimmedValue() ?: getTrimmedProperty("SonatypeMavenCentral.Password")
 
-                requireNotNull(username) { "Username is null or blank" }
-                requireNotNull(password) { "Password is null or blank" }
+                requireNotNull(username) { "Missing Sonatype portal username. Configure credentials { username = ... }, or set the SonatypeMavenCentral.Username Gradle property." }
+                requireNotNull(password) { "Missing Sonatype portal password. Configure credentials { password = ... }, or set the SonatypeMavenCentral.Password Gradle property." }
 
                 val type = typeProperty.getStringType()
 

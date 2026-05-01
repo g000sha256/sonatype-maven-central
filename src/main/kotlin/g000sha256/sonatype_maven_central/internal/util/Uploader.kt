@@ -130,5 +130,5 @@ private fun HttpRequestBuilder.multiPartFormDataBody(formData: List<PartData>) {
 
 private fun checkResponseStatus(response: HttpResponse) {
     val status = response.status
-    require(status == HttpStatusCode.Created) { "code=${status.value}, description=${status.description}" }
+    require(status == HttpStatusCode.Created) { "Failed to upload bundle: HTTP ${status.value} ${status.description}" }
 }
