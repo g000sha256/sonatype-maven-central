@@ -39,7 +39,7 @@ publishing {
         withType<MavenPublication> {
             pom {
                 name = "Sonatype Maven Central publish plugin"
-                description = "A plugin to publish artifacts to the Sonatype Maven Central repository"
+                description = "An unofficial Gradle plugin for publishing artifacts to the Sonatype Maven Central repository"
 
                 url = "https://github.com/g000sha256/sonatype-maven-central"
                 inceptionYear = "2024"
@@ -47,7 +47,7 @@ publishing {
                 licenses {
                     license {
                         name = "Apache License 2.0"
-                        url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
                     }
                 }
 
@@ -55,7 +55,7 @@ publishing {
                     developer {
                         id = "g000sha256"
                         name = "Georgii Ippolitov"
-                        email = "detmmpmznb@g000sha256.dev"
+                        email = "github@g000sha256.dev"
                         url = "https://github.com/g000sha256"
                     }
                 }
