@@ -59,6 +59,9 @@ internal fun uploadBundle(
     val deploymentId = runBlocking { upload(token, name, type.type, bundleFile) }
 
     logger.lifecycle("The bundle was successfully uploaded to Sonatype Maven Central: deploymentId=$deploymentId")
+    if (type == SonatypeMavenCentralType.Manual) {
+        logger.lifecycle("The deployment is awaiting manual publishing at https://central.sonatype.com/publishing/deployments")
+    }
 }
 
 private fun checkParameters(bundleFile: File) {
