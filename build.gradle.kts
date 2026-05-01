@@ -7,6 +7,7 @@ plugins {
     alias(catalog.plugins.gradle.mavenPublish)
     alias(catalog.plugins.gradle.signing)
     alias(catalog.plugins.jetBrains.binaryCompatibilityValidator)
+    alias(catalog.plugins.jetBrains.dokka)
     alias(catalog.plugins.jetBrains.kotlin)
 }
 
@@ -22,6 +23,13 @@ kotlin {
     compilerOptions {
         allWarningsAsErrors = true
         moduleName = "g000sha256.sonatype_maven_central"
+    }
+}
+
+tasks {
+    named<Jar>(name = "javadocJar") {
+        val taskProvider = named(name = "dokkaGeneratePublicationJavadoc")
+        from(taskProvider)
     }
 }
 
