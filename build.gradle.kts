@@ -20,6 +20,7 @@ kotlin {
     jvmToolchain(jdkVersion = 11)
 
     compilerOptions {
+        allWarningsAsErrors = true
         moduleName = "g000sha256.sonatype_maven_central"
     }
 }
