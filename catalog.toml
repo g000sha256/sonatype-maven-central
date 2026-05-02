@@ -1,5 +1,4 @@
 [versions]
-annotations = "26.0.2"
 binaryCompatibilityValidator = "0.18.1"
 coroutines = "1.10.2"
 kotlin = "2.1.21"
@@ -15,9 +14,7 @@ jetBrains-binaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-co
 jetBrains-kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 
 [libraries]
-libs-jetBrains-annotations = { module = "org.jetbrains:annotations", version.ref = "annotations" }
 libs-jetBrains-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
-libs-jetBrains-kotlin = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 libs-ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 libs-ktor-client-java = { module = "io.ktor:ktor-client-java", version.ref = "ktor" }
 libs-ktor-http = { module = "io.ktor:ktor-http", version.ref = "ktor" }

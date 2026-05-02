@@ -25,9 +25,6 @@ kotlin {
 }
 
 dependencies {
-    implementation(catalog.libs.jetBrains.annotations)
-    implementation(catalog.libs.jetBrains.kotlin)
-
     implementation(catalog.libs.jetBrains.coroutines)
     implementation(catalog.libs.ktor.client.core)
     implementation(catalog.libs.ktor.client.java)
