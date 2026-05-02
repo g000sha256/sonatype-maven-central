@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
+
 group = "dev.g000sha256"
 version = "1.1.1"
 
@@ -6,7 +8,6 @@ plugins {
     alias(catalog.plugins.gradle.javaGradlePlugin)
     alias(catalog.plugins.gradle.mavenPublish)
     alias(catalog.plugins.gradle.signing)
-    alias(catalog.plugins.jetBrains.binaryCompatibilityValidator)
     alias(catalog.plugins.jetBrains.dokka)
     alias(catalog.plugins.jetBrains.kotlin)
 }
@@ -19,6 +20,11 @@ java {
 kotlin {
     explicitApi()
     jvmToolchain(jdkVersion = 11)
+
+    @OptIn(ExperimentalAbiValidation::class)
+    abiValidation {
+        enabled = true
+    }
 
     compilerOptions {
         allWarningsAsErrors = true
