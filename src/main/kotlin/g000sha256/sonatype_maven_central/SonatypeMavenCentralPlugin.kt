@@ -43,13 +43,11 @@ public class SonatypeMavenCentralPlugin : Plugin<Project> {
     }
 
     internal abstract class RepositoryWrapper @Inject constructor(
-        private val credentials: SonatypeMavenCentralCredentials
+        private val credentials: SonatypeMavenCentralCredentials,
     ) : SonatypeMavenCentralRepository {
 
         override fun credentials(block: SonatypeMavenCentralCredentials.() -> Unit) {
             credentials.block()
         }
-
     }
-
 }

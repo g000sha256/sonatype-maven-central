@@ -22,5 +22,4 @@ public interface SonatypeMavenCentralCredentials {
 
     public val username: Property<String>
     public val password: Property<String>
-
 }

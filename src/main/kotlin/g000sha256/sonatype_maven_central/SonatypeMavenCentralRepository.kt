@@ -23,5 +23,4 @@ public interface SonatypeMavenCentralRepository {
     public val type: Property<SonatypeMavenCentralType>
 
     public fun credentials(block: SonatypeMavenCentralCredentials.() -> Unit)
-
 }

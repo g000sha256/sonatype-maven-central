@@ -32,7 +32,7 @@ import org.gradle.plugins.signing.SigningPlugin
 internal fun Project.initPlugin(
     usernameProperty: Property<String>,
     passwordProperty: Property<String>,
-    typeProperty: Property<SonatypeMavenCentralType>
+    typeProperty: Property<SonatypeMavenCentralType>,
 ) {
     plugins.apply(MavenPublishPlugin::class.java)
     plugins.apply(SigningPlugin::class.java)

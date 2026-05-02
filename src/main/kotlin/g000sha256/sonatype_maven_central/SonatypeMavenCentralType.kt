@@ -21,5 +21,4 @@ public sealed class SonatypeMavenCentralType {
     public object Automatic : SonatypeMavenCentralType()
 
     public object Manual : SonatypeMavenCentralType()
-
 }
