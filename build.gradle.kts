@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 group = "dev.g000sha256"
-version = "1.1.1"
+version = "2.0.0"
 
 plugins {
     alias(catalog.plugins.g000sha256.sonatypeMavenCentral)
