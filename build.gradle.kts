@@ -75,8 +75,8 @@ publishing {
                 }
 
                 scm {
-                    connection = "scm:git:git://github.com/g000sha256/sonatype-maven-central.git"
-                    developerConnection = "scm:git:git@github.com:g000sha256/sonatype-maven-central.git"
+                    connection = "scm:git:https://github.com/g000sha256/sonatype-maven-central.git"
+                    developerConnection = "scm:git:ssh://git@github.com/g000sha256/sonatype-maven-central.git"
                     url = "https://github.com/g000sha256/sonatype-maven-central"
                 }
 
