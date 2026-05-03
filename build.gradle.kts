@@ -4,12 +4,12 @@ group = "dev.g000sha256"
 version = "2.0.0"
 
 plugins {
-    alias(catalog.plugins.g000sha256.sonatypeMavenCentral)
-    alias(catalog.plugins.gradle.javaGradlePlugin)
-    alias(catalog.plugins.gradle.mavenPublish)
-    alias(catalog.plugins.gradle.signing)
-    alias(catalog.plugins.jetBrains.dokka)
-    alias(catalog.plugins.jetBrains.kotlin)
+    alias(notation = catalog.plugins.g000sha256.sonatypeMavenCentral)
+    alias(notation = catalog.plugins.gradle.javaGradlePlugin)
+    alias(notation = catalog.plugins.gradle.mavenPublish)
+    alias(notation = catalog.plugins.gradle.signing)
+    alias(notation = catalog.plugins.jetBrains.dokka)
+    alias(notation = catalog.plugins.jetBrains.kotlin)
 }
 
 java {
@@ -90,15 +90,15 @@ publishing {
 }
 
 signing {
-    val key = getProperty("Signing.Key") ?: getEnvironment("SIGNING_KEY")
-    val password = getProperty("Signing.Password") ?: getEnvironment("SIGNING_PASSWORD")
+    val key = getProperty(key = "Signing.Key") ?: getEnvironment(key = "SIGNING_KEY")
+    val password = getProperty(key = "Signing.Password") ?: getEnvironment(key = "SIGNING_PASSWORD")
     useInMemoryPgpKeys(key, password)
 
     sign(publishing.publications)
 }
 
 private fun getProperty(key: String): String? {
-    return properties[key] as String?
+    return properties.get(key = key) as String?
 }
 
 private fun getEnvironment(key: String): String? {
