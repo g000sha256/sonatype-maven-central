@@ -1,14 +1,10 @@
 rootProject.name = "sonatype-maven-central"
 
-pluginManagement {
+dependencyResolutionManagement {
+    @Suppress("UnstableApiUsage")
     repositories {
-        gradlePluginPortal()
         mavenCentral()
     }
-}
-
-dependencyResolutionManagement {
-    repositories { mavenCentral() }
 
     versionCatalogs {
         register("catalog") {
