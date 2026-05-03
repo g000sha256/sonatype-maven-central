@@ -28,7 +28,7 @@ kotlin {
 
     compilerOptions {
         allWarningsAsErrors = true
-        moduleName = "g000sha256.sonatype_maven_central"
+        moduleName = "dev.g000sha256.sonatype_maven_central"
     }
 }
 
