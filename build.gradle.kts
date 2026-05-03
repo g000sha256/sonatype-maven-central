@@ -39,6 +39,15 @@ tasks {
     }
 }
 
+gradlePlugin {
+    plugins {
+        register("release") {
+            id = "dev.g000sha256.sonatype-maven-central"
+            implementationClass = "g000sha256.sonatype_maven_central.SonatypeMavenCentralPlugin"
+        }
+    }
+}
+
 publishing {
     publications {
         withType<MavenPublication> {
@@ -76,15 +85,6 @@ publishing {
                     url = "https://github.com/g000sha256/sonatype-maven-central/issues"
                 }
             }
-        }
-    }
-}
-
-gradlePlugin {
-    plugins {
-        register("release") {
-            id = "dev.g000sha256.sonatype-maven-central"
-            implementationClass = "g000sha256.sonatype_maven_central.SonatypeMavenCentralPlugin"
         }
     }
 }
