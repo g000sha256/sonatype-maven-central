@@ -3,9 +3,10 @@
 [![Maven Central](https://img.shields.io/maven-central/v/dev.g000sha256/sonatype-maven-central?label=Maven%20Central&labelColor=171C35&color=E38E33)](https://central.sonatype.com/artifact/dev.g000sha256/sonatype-maven-central)
 
 This is an unofficial Gradle plugin that simplifies the process of publishing your artifacts to the
-[Sonatype Maven Central Repository](https://central.sonatype.com). It uses standard plugins
-such as the [Maven Publish Plugin](https://docs.gradle.org/current/userguide/publishing_maven.html)
-and the [Signing Plugin](https://docs.gradle.org/current/userguide/signing_plugin.html).
+[Sonatype Maven Central Repository](https://central.sonatype.com). It uses the standard
+[Maven Publish plugin](https://docs.gradle.org/current/userguide/publishing_maven.html)
+and [Signing plugin](https://docs.gradle.org/current/userguide/signing_plugin.html), and auto-applies
+the [Gradle Signing plugin](https://github.com/g000sha256/gradle-signing) for in-memory PGP keys.
 
 ## Initialization
 
@@ -28,8 +29,9 @@ plugins {
 ```
 
 > [!NOTE]
-> The plugins `org.gradle.maven-publish` and `org.gradle.signing` will be applied automatically,
-> so you don't need to add them manually.
+> The plugins `org.gradle.maven-publish`, `org.gradle.signing`, and
+> [`dev.g000sha256.signing`](https://github.com/g000sha256/gradle-signing) will be applied automatically, so you don't need to
+> add them manually.
 
 ## Configuration
 
@@ -101,33 +103,36 @@ There are two steps: add signing keys and choose what to sign.
 
 #### Add keys
 
-Store your [GPG credentials](https://central.sonatype.org/publish/requirements/gpg)
-securely in your private Gradle properties file (`~/.gradle/gradle.properties`):
+The plugin auto-applies the [Gradle Signing plugin](https://github.com/g000sha256/gradle-signing) for in-memory PGP keys.
+
+For CI/CD, set environment variables:
+
+```shell
+SIGNING_KEY=<your signing key>
+SIGNING_PASSWORD=<your signing password>
+# optional
+SIGNING_KEY_ID=<your signing key id>
+```
+
+Or store the credentials in your private Gradle properties file (`~/.gradle/gradle.properties`):
 
 ```properties
-signing.keyId=<your signing keyId>
+signing.key=<your signing key>
 signing.password=<your signing password>
-signing.secretKeyRingFile=<your path to secring.gpg file>
+# optional
+signing.keyId=<your signing key id>
 ```
 
-Also, you can set up [in-memory PGP keys](https://docs.gradle.org/current/userguide/signing_plugin.html#sec:in-memory-keys):
+> [!NOTE]
+> If those values aren't resolved, the standard Signing plugin's
+> file-based [GPG credentials](https://central.sonatype.org/publish/requirements/gpg)
+> (`signing.keyId`, `signing.password`, `signing.secretKeyRingFile`) still work.
+
+You can also override the configured keys via your own `signing` block:
 
 ```kotlin
 signing {
-    val signingKey: String? by project
-    val signingPassword: String? by project
-    useInMemoryPgpKeys(signingKey, signingPassword)
-}
-```
-
-or
-
-```kotlin
-signing {
-    val signingKeyId: String? by project
-    val signingKey: String? by project
-    val signingPassword: String? by project
-    useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+    useInMemoryPgpKeys("<your signing key>", "<your signing password>")
 }
 ```
 
