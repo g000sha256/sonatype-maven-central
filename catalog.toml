@@ -1,9 +1,11 @@
 [versions]
 dokka = "2.2.0"
 kotlin = "2.3.21"
+signing = "1.0.0"
 sonatypeMavenCentral = "2.0.0"
 
 [plugins]
+g000sha256-signing = { id = "dev.g000sha256.signing", version.ref = "signing" }
 g000sha256-sonatypeMavenCentral = { id = "dev.g000sha256.sonatype-maven-central", version.ref = "sonatypeMavenCentral" }
 gradle-javaGradlePlugin = { id = "org.gradle.java-gradle-plugin" }
 jetBrains-dokka = { id = "org.jetbrains.dokka-javadoc", version.ref = "dokka" }
