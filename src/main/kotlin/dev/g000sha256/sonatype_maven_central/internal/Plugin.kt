@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package g000sha256.sonatype_maven_central.internal
+package dev.g000sha256.sonatype_maven_central.internal
 
+import dev.g000sha256.sonatype_maven_central.internal.util.createDirectory
+import dev.g000sha256.sonatype_maven_central.internal.util.uploadBundle
+import dev.g000sha256.sonatype_maven_central.internal.util.zipFromDirectory
 import g000sha256.sonatype_maven_central.SonatypeMavenCentralType
-import g000sha256.sonatype_maven_central.internal.util.createDirectory
-import g000sha256.sonatype_maven_central.internal.util.uploadBundle
-import g000sha256.sonatype_maven_central.internal.util.zipFromDirectory
 import java.io.File
 import org.gradle.api.Project
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository

@@ -16,7 +16,7 @@
 
 package g000sha256.sonatype_maven_central
 
-import g000sha256.sonatype_maven_central.internal.initPlugin
+import dev.g000sha256.sonatype_maven_central.internal.initPlugin
 import javax.inject.Inject
 import org.gradle.api.Plugin
 import org.gradle.api.Project

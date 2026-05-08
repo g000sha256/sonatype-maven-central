@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package g000sha256.sonatype_maven_central.internal.util
+package dev.g000sha256.sonatype_maven_central.internal.util
 
 import java.io.File
 import java.io.FileInputStream
