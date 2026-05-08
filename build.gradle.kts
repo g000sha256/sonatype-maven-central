@@ -31,6 +31,10 @@ kotlin {
     }
 }
 
+dependencies {
+    implementation(catalog.g000sha256.signing)
+}
+
 tasks {
     named<Jar>(name = "javadocJar") {
         val taskProvider = named(name = "dokkaGeneratePublicationJavadoc")

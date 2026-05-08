@@ -10,3 +10,6 @@ g000sha256-sonatypeMavenCentral = { id = "dev.g000sha256.sonatype-maven-central"
 gradle-javaGradlePlugin = { id = "org.gradle.java-gradle-plugin" }
 jetBrains-dokka = { id = "org.jetbrains.dokka-javadoc", version.ref = "dokka" }
 jetBrains-kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+
+[libraries]
+g000sha256-signing = { module = "dev.g000sha256:gradle-signing", version.ref = "signing" }

@@ -27,7 +27,6 @@ import org.gradle.api.provider.Property
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
-import org.gradle.plugins.signing.SigningPlugin
 
 internal fun Project.initPlugin(
     usernameProperty: Property<String>,
@@ -35,7 +34,7 @@ internal fun Project.initPlugin(
     typeProperty: Property<SonatypeMavenCentralType>,
 ) {
     plugins.apply(MavenPublishPlugin::class.java)
-    plugins.apply(SigningPlugin::class.java)
+    plugins.apply("dev.g000sha256.signing")
 
     typeProperty.convention(SonatypeMavenCentralType.Manual)
 
