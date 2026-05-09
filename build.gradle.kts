@@ -4,7 +4,6 @@ group = "dev.g000sha256"
 version = "2.1.0"
 
 plugins {
-    alias(notation = catalog.plugins.g000sha256.signing)
     alias(notation = catalog.plugins.g000sha256.sonatypeMavenCentral)
     alias(notation = catalog.plugins.gradle.javaGradlePlugin)
     alias(notation = catalog.plugins.jetBrains.dokka)
