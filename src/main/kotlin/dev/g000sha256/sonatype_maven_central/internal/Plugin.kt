@@ -16,6 +16,7 @@
 
 package dev.g000sha256.sonatype_maven_central.internal
 
+import dev.g000sha256.signing.SigningPlugin
 import dev.g000sha256.sonatype_maven_central.internal.util.createDirectory
 import dev.g000sha256.sonatype_maven_central.internal.util.uploadBundle
 import dev.g000sha256.sonatype_maven_central.internal.util.zipFromDirectory
@@ -34,7 +35,7 @@ internal fun Project.initPlugin(
     typeProperty: Property<SonatypeMavenCentralType>,
 ) {
     plugins.apply(MavenPublishPlugin::class.java)
-    plugins.apply("dev.g000sha256.signing")
+    plugins.apply(SigningPlugin::class.java)
 
     typeProperty.convention(SonatypeMavenCentralType.Manual)
 
