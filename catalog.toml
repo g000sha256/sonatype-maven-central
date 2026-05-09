@@ -1,7 +1,7 @@
 [versions]
 dokka = "2.2.0"
 kotlin = "2.3.21"
-signing = "1.0.0"
+signing = "1.0.1"
 sonatypeMavenCentral = "2.1.0"
 
 [plugins]
