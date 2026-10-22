@@ -20,12 +20,12 @@ import g000sha256.sonatype_maven_central.SonatypeMavenCentralType
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileInputStream
-import java.io.InputStream
 import java.io.SequenceInputStream
 import java.net.URI
 import java.net.URLEncoder
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
+import java.net.http.HttpRequest.BodyPublisher
 import java.net.http.HttpRequest.BodyPublishers
 import java.net.http.HttpResponse
 import java.net.http.HttpResponse.BodyHandlers
@@ -39,6 +39,7 @@ private val connectTimeout = Duration.ofSeconds(10)
 private val httpClient by lazy {
     return@lazy HttpClient
         .newBuilder()
+        .version(HttpClient.Version.HTTP_1_1)
         .connectTimeout(connectTimeout)
         .build()
 }
@@ -79,7 +80,7 @@ private fun postRequest(token: String, name: String, type: String, bundleFile: F
         .nanoTime()
         .toString(radix = 16)
         .let { text -> "SonatypeMavenCentralBoundary$text" }
-    val bodyPublisher = BodyPublishers.ofInputStream { buildMultipartStream(boundary, bundleFile) }
+    val bodyPublisher = buildMultipartBodyPublisher(boundary = boundary, file = bundleFile)
     val bodyHandler = BodyHandlers.ofString()
     return HttpRequest
         .newBuilder()
@@ -97,27 +98,49 @@ private fun buildUri(name: String, type: String): URI {
     return URI.create("https://central.sonatype.com/api/v1/publisher/upload?name=$encodedName&publishingType=$encodedType")
 }
 
-private fun buildMultipartStream(boundary: String, file: File): InputStream {
-    val headerString = buildString {
+private fun buildMultipartBodyPublisher(boundary: String, file: File): BodyPublisher {
+    val header = createMultipartHeader(boundary = boundary, fileName = file.name)
+    val footer = createMultipartFooter(boundary = boundary)
+    return createFixedLengthBodyPublisher(header = header, file = file, footer = footer)
+}
+
+private fun createMultipartHeader(boundary: String, fileName: String): ByteArray {
+    val header = buildString {
         append("--")
         append(boundary)
         append("\r\n")
         append("Content-Disposition: form-data; name=\"bundle\"; filename=\"")
-        append(file.name)
+        append(fileName)
         append("\"\r\n")
         append("Content-Type: application/octet-stream\r\n")
         append("\r\n")
     }
-    val header = headerString.toByteArray(StandardCharsets.UTF_8)
-    val footerString = "\r\n--$boundary--\r\n"
-    val footer = footerString.toByteArray(StandardCharsets.UTF_8)
-    val streams = listOf(
-        ByteArrayInputStream(header),
-        FileInputStream(file),
-        ByteArrayInputStream(footer),
-    )
-    val enumeration = Collections.enumeration(streams)
-    return SequenceInputStream(enumeration)
+    return header.toByteArray(StandardCharsets.UTF_8)
+}
+
+private fun createMultipartFooter(boundary: String): ByteArray {
+    val footer = "\r\n--$boundary--\r\n"
+    return footer.toByteArray(StandardCharsets.UTF_8)
+}
+
+private fun createFixedLengthBodyPublisher(header: ByteArray, file: File, footer: ByteArray): BodyPublisher {
+    val bodyPublisher = createInputStreamBodyPublisher(header = header, file = file, footer = footer)
+    val contentLength = header.size + file.length() + footer.size
+    return BodyPublishers.fromPublisher(bodyPublisher, contentLength)
+}
+
+private fun createInputStreamBodyPublisher(header: ByteArray, file: File, footer: ByteArray): BodyPublisher {
+    return BodyPublishers.ofInputStream {
+        val inputStreams = listOf(
+            ByteArrayInputStream(header),
+            FileInputStream(file),
+            ByteArrayInputStream(footer),
+        )
+
+        return@ofInputStream Collections
+            .enumeration(inputStreams)
+            .let { enumeration -> SequenceInputStream(enumeration) }
+    }
 }
 
 private fun checkResponseStatus(response: HttpResponse<*>) {
